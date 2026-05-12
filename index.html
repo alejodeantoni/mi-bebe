@@ -3,829 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mantenimiento App</title>
-    
-    <!-- Iconos y Fuentes -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Configuración PWA -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Iconos -->
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2098/2098589.png">
-
+    <title>Diario del Bebé v2.0</title>
     <style>
         :root {
-            /* Tema Claro */
-            --primary: #2563eb; --primary-hover: #1d4ed8; --bg-body: #f3f4f6; --bg-card: #ffffff;
-            --text-main: #1f2937; --text-muted: #6b7280; --border-color: #e5e7eb;
-            --danger: #ef4444; --warning: #f59e0b; --success: #10b981;
-            --input-bg: #ffffff;
-            --modal-bg: #ffffff;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --primary: #FF9EAA; 
+            --primary-dark: #FF6B7D; 
+            --secondary: #89CFF0; /* Azul claro para cuenta regresiva */
+            --text: #5D5D5D; 
+            --bg: #FFF0F5; 
+            --white: #FFFFFF;
+            --shadow: 0 8px 20px rgba(255, 107, 125, 0.15); 
+            --admin-bg: #f4f4f4; 
+            --admin-border: #ddd;
+        }
+        
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            margin: 0; padding: 0; 
+            display: flex; flex-direction: column; min-height: 100vh; 
+        }
+        
+        header { 
+            background: var(--white); padding: 1.5rem; text-align: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        }
+        h1 { margin: 0; color: var(--primary-dark); }
+        
+        main { 
+            flex: 1; max-width: 600px; margin: 20px auto; 
+            width: 100%; padding: 0 15px; 
+        }
+        
+        .card { 
+            background: var(--white); border-radius: 15px; 
+            padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; 
+            text-align: center; 
         }
 
-        /* Tema Oscuro */
-        [data-theme="dark"] {
-            --primary: #3b82f6; --primary-hover: #60a5fa; --bg-body: #111827; --bg-card: #1f2937;
-            --text-main: #f9fafb; --text-muted: #9ca3af; --border-color: #374151;
-            --danger: #f87171; --warning: #fbbf24; --success: #34d399;
-            --input-bg: #374151;
-            --modal-bg: #1f2937;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        input[type="date"] { 
+            padding: 15px; width: 100%; border: 2px solid #eee; 
+            border-radius: 10px; margin-bottom: 15px; font-size: 1rem; 
+        }
+        
+        button.btn { 
+            background: var(--primary-dark); color: white; border: none; 
+            padding: 15px; width: 100%; border-radius: 25px; 
+            font-size: 1rem; cursor: pointer; font-weight: bold; 
+        }
+        button.btn:hover { opacity: 0.9; }
+
+        /* Estilos de las tarjetas de información */
+        .info-box {
+            background: linear-gradient(135deg, var(--primary), #FFB3C1);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .countdown-box {
+            background: linear-gradient(135deg, #89CFF0, #4682B4); /* Azul */
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .big-number { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+        .label { font-size: 0.9rem; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; }
+
+        .creator-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 300px; }
+        .creator-text { text-align: left; line-height: 1.6; white-space: pre-wrap; }
         
-        body {
-            font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding-bottom: 80px; transition: background 0.3s, color 0.3s;
+        /* ESTILOS DEL PANEL DE ADMINISTRACIÓN */
+        #admin-panel { 
+            background: var(--admin-bg); padding: 20px; border: 2px solid var(--primary); 
+            border-radius: 15px; margin-bottom: 20px; 
         }
-
-        header {
-            background-color: var(--bg-card); padding: 1rem 1rem; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; transition: background 0.3s;
+        .admin-controls { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        .admin-controls select, .admin-controls input, .admin-controls button, .admin-controls textarea { 
+            padding: 10px; border-radius: 5px; border: 1px solid var(--admin-border); 
         }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo-area { display: flex; align-items: center; gap: 0.5rem; }
-        .logo-area i { font-size: 1.8rem; color: var(--primary); }
-        h1 { font-size: 1.25rem; font-weight: 700; }
-        
-        .header-right { display: flex; align-items: center; gap: 0.5rem; }
-        .icon-btn { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 4px; border-radius: 50%; transition: all 0.2s; }
-        .icon-btn:hover { background: rgba(128,128,128,0.1); color: var(--primary); }
-        .version-tag {
-            background-color: rgba(128,128,128,0.2); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;
+        .admin-controls input[type="text"] { flex: 1; }
+        textarea#code-output { width: 100%; height: 120px; font-family: monospace; font-size: 0.7rem; margin-top: 10px; }
+        .hidden { display: none !important; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #999;
+            border-top: 1px solid #eee;
+            margin-top: auto;
         }
-
-        .search-container { max-width: 1200px; margin: 1.5rem auto 0.5rem; padding: 0 1rem; }
-        .search-input {
-            width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem;
-            border-radius: 12px; border: 1px solid var(--border-color);
-            background: var(--bg-card); color: var(--text-main);
-            font-size: 1rem; font-family: inherit; transition: border-color 0.2s;
-        }
-        .search-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        .search-icon-wrapper { position: relative; }
-        .search-icon-wrapper i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-
-        .stats-bar { max-width: 1200px; margin: 1.5rem auto 1rem; padding: 0 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
-        .stat-card { background: var(--bg-card); padding: 1rem; border-radius: var(--border-radius); box-shadow: var(--shadow); display: flex; align-items: center; gap: 0.75rem; transition: background 0.3s; }
-        .stat-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
-        .stat-icon.danger { background: rgba(239,68,68,0.15); color: var(--danger); }
-        .stat-icon.warning { background: rgba(245,158,11,0.15); color: var(--warning); }
-        .stat-icon.success { background: rgba(16,185,129,0.15); color: var(--success); }
-        .stat-info h3 { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
-        .stat-info p { font-size: 1.25rem; font-weight: 700; }
-
-        /* Filtros y Cambio de Vista */
-        .view-controls { max-width: 1200px; margin: 0 auto 1rem; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-        .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .filter-btn { background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 0.9rem; color: var(--text-muted); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
-        .view-toggle { display: flex; gap: 0.5rem; background: var(--bg-card); padding: 4px; border-radius: 10px; border: 1px solid var(--border-color); }
-        .view-btn { background: none; border: none; color: var(--text-muted); padding: 6px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s; }
-        .view-btn.active { background: var(--bg-body); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-
-        /* LISTA */
-        .tasks-grid { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
-        .task-card { background: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--shadow); padding: 1.25rem; transition: transform 0.2s, background 0.3s; border-left: 5px solid transparent; position: relative; }
-        .task-card:hover { transform: translateY(-2px); }
-        .task-card.status-overdue { border-left-color: var(--danger); }
-        .task-card.status-soon { border-left-color: var(--warning); }
-        .task-card.status-ok { border-left-color: var(--success); }
-        
-        .task-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-main); }
-        .task-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); background: rgba(128,128,128,0.15); padding: 2px 8px; border-radius: 4px; display: inline-block; }
-        
-        .task-notes { margin: 0.75rem 0; padding: 0.5rem 0.75rem; background: rgba(128,128,128,0.1); border-radius: 6px; font-size: 0.85rem; color: var(--text-main); font-style: italic; border-left: 3px solid var(--text-muted); }
-        .task-notes::before { content: '📝 '; font-style: normal; margin-right: 4px; }
-
-        .task-dates { margin: 0.75rem 0; font-size: 0.85rem; color: var(--text-muted); }
-        .date-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
-        .days-highlight { font-weight: 600; color: var(--text-main); }
-        .status-overdue .days-highlight { color: var(--danger); }
-        .status-soon .days-highlight { color: var(--warning); }
-
-        .history-btn { background: none; border: none; color: var(--primary); font-size: 0.8rem; cursor: pointer; text-decoration: underline; padding: 0; margin-bottom: 0.5rem; display: inline-flex; align-items: center; gap: 4px; }
-
-        .progress-bar { height: 4px; background: rgba(128,128,128,0.2); border-radius: 2px; overflow: hidden; margin-bottom: 1rem; }
-        .progress-fill { height: 100%; background: var(--success); transition: width 0.5s ease; }
-        .status-overdue .progress-fill { background: var(--danger); }
-        .status-soon .progress-fill { background: var(--warning); }
-
-        .task-actions { display: flex; gap: 0.5rem; }
-        .btn { flex: 1; padding: 0.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: opacity 0.2s; }
-        .btn-complete { background: var(--primary); color: white; }
-        .btn-edit { background: rgba(128,128,128,0.15); color: var(--text-main); }
-        .btn-delete { background: rgba(239,68,68,0.15); color: var(--danger); width: 35px; flex: none; }
-        
-        /* CALENDARIO */
-        .calendar-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: none; }
-        .calendar-wrapper.active { display: block; }
-
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0 0.5rem; }
-        .calendar-nav-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; }
-        .calendar-nav-btn:hover { color: var(--primary); }
-        .calendar-title { font-size: 1.2rem; font-weight: 700; }
-
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; background: var(--bg-card); padding: 1rem; border-radius: var(--border-radius); box-shadow: var(--shadow); }
-        .cal-day-header { text-align: center; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; padding-bottom: 0.5rem; }
-        .cal-day { 
-            min-height: 80px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 8px; 
-            padding: 6px; 
-            cursor: pointer; 
-            transition: background 0.2s; 
-            position: relative;
-        }
-        .cal-day:hover { background: rgba(128,128,128,0.1); }
-        .cal-day.today { border: 2px solid var(--primary); }
-        .cal-day-num { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
-        .cal-dots { display: flex; flex-direction: column; gap: 4px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot.overdue { background: var(--danger); }
-        .dot.soon { background: var(--warning); }
-        .dot.ok { background: var(--success); }
-        
-        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); cursor: pointer; border: none; transition: transform 0.2s; z-index: 90; }
-        .fab:hover { transform: scale(1.1); }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; padding: 1rem; }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .modal { background: var(--modal-bg); padding: 2rem; border-radius: var(--border-radius); width: 100%; max-width: 500px; transform: translateY(20px); transition: transform 0.3s; color: var(--text-main); max-height: 90vh; overflow-y: auto; }
-        .modal-overlay.open .modal { transform: translateY(0); }
-        
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-muted); }
-        .form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-family: inherit; }
-        .form-control:focus { outline: none; border-color: var(--primary); }
-        textarea.form-control { resize: vertical; min-height: 80px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-        .history-list { list-style: none; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
-        .history-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
-        .history-date { font-weight: 600; color: var(--primary); font-size: 0.9rem; }
-        .history-notes { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-
-        .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #1f2937; color: white; padding: 12px 24px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 20px; animation: slideUp 0.3s ease-out; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 300px; }
-        .toast button { background: none; border: none; color: var(--warning); font-weight: 700; cursor: pointer; text-decoration: underline; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
-        .btn-block { width: 100%; margin-bottom: 0.5rem; }
     </style>
 </head>
 <body>
 
-<!-- CARGAR EL ARCHIVO DE CONFIGURACIÓN -->
-<script src="config.js"></script>
+    <header>
+        <h1>👶 Mi Bebé</h1>
+    </header>
 
-<header>
-    <div class="header-content">
-        <div class="logo-area">
-            <i class="ph ph-wrench"></i>
-            <h1>Mantenimiento App</h1>
-        </div>
-        <div class="header-right">
-            <div class="version-tag">V1.3.0</div>
-            <button class="icon-btn" onclick="openSettings()" title="Configuración"><i class="ph ph-gear"></i></button>
-            <button class="icon-btn" onclick="toggleTheme()" title="Cambiar Tema"><i class="ph ph-moon" id="themeIcon"></i></button>
-        </div>
-    </div>
-</header>
-
-<main>
-    <section class="search-container">
-        <div class="search-icon-wrapper">
-            <i class="ph ph-magnifying-glass"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Buscar tarea...">
-        </div>
-    </section>
-
-    <section class="stats-bar" id="statsBar">
-        <div class="stat-card">
-            <div class="stat-icon danger"><i class="ph ph-warning-circle"></i></div>
-            <div class="stat-info"><h3>Vencidas</h3><p id="countOverdue">0</p></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon warning"><i class="ph ph-bell-ringing"></i></div>
-            <div class="stat-info"><h3>Próximas</h3><p id="countSoon">0</p></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon success"><i class="ph ph-check-circle"></i></div>
-            <div class="stat-info"><h3>En orden</h3><p id="countOk">0</p></div>
-        </div>
-    </section>
-
-    <!-- CONTROLES DE VISTA Y FILTROS -->
-    <section class="view-controls">
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterTasks('all')">Todas</button>
-            <button class="filter-btn" onclick="filterTasks('overdue')">Vencidas</button>
-            <button class="filter-btn" onclick="filterTasks('soon')">Próximas</button>
-            <button class="filter-btn" onclick="filterTasks('ok')">En orden</button>
-        </div>
-        
-        <div class="view-toggle">
-            <button class="view-btn active" id="btnViewList" onclick="switchView('list')" title="Vista Lista"><i class="ph ph-list-dashes"></i></button>
-            <button class="view-btn" id="btnViewCalendar" onclick="switchView('calendar')" title="Vista Calendario"><i class="ph ph-calendar-blank"></i></button>
-        </div>
-    </section>
-
-    <!-- VISTA LISTA -->
-    <section class="tasks-grid active" id="tasksContainer"></section>
-
-    <!-- VISTA CALENDARIO -->
-    <section class="calendar-wrapper" id="calendarContainer">
-        <div class="calendar-header">
-            <button class="calendar-nav-btn" onclick="changeMonth(-1)"><i class="ph ph-caret-left"></i></button>
-            <div class="calendar-title" id="calendarTitle">Octubre 2023</div>
-            <button class="calendar-nav-btn" onclick="changeMonth(1)"><i class="ph ph-caret-right"></i></button>
-        </div>
-        <div class="calendar-grid" id="calendarGrid">
-            <!-- Se genera con JS -->
-        </div>
-    </section>
-</main>
-
-<button class="fab" onclick="openTaskModal()"><i class="ph ph-plus"></i></button>
-
-<!-- MODAL: Crear/Editar Tarea -->
-<div class="modal-overlay" id="taskModalOverlay">
-    <div class="modal">
-        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
-            <h2 id="taskModalTitle" style="font-size:1.25rem; font-weight:700;">Nueva Tarea</h2>
-            <button class="close-modal" onclick="closeTaskModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted);">✕</button>
-        </div>
-        <form id="taskForm">
-            <input type="hidden" id="taskId">
-            <div class="form-group">
-                <label>Nombre</label>
-                <input type="text" id="taskName" class="form-control" placeholder="Ej. Cambiar filtro" required>
-            </div>
-            <div class="form-group">
-                <label>Categoría</label>
-                <select id="taskCategory" class="form-control">
-                    <option>General</option><option>Fontanería</option><option>Electricidad</option>
-                    <option>Calefacción</option><option>Exterior</option><option>Electrodomésticos</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Notas / Detalles (Opcional)</label>
-                <textarea id="taskNotes" class="form-control" placeholder="Ej. Modelo del filtro, compra necesaria..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Última vez realizada</label>
-                <input type="date" id="lastDoneDate" class="form-control" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Frecuencia</label>
-                    <input type="number" id="frequencyValue" class="form-control" min="1" value="1" required>
-                </div>
-                <div class="form-group">
-                    <label>Unidad</label>
-                    <select id="frequencyType" class="form-control">
-                        <option value="days">Días</option>
-                        <option value="months">Meses</option>
-                        <option value="years" selected>Años</option>
-                    </select>
-                </div>
-            </div>
-            <div class="task-actions" style="margin-top:2rem;">
-                <button type="button" class="btn btn-edit" onclick="closeTaskModal()">Cancelar</button>
-                <button type="submit" class="btn btn-complete">Guardar</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL: Historial -->
-<div class="modal-overlay" id="historyModalOverlay">
-    <div class="modal">
-        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-            <h2 style="font-size:1.2rem; font-weight:700;">Historial</h2>
-            <button class="close-modal" onclick="closeHistoryModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted);">✕</button>
-        </div>
-        <h3 id="historyTaskName" style="margin-bottom:1rem; color:var(--primary);"></h3>
-        <ul class="history-list" id="historyListContainer"></ul>
-    </div>
-</div>
-
-<!-- MODAL: Configuración -->
-<div class="modal-overlay" id="settingsModalOverlay">
-    <div class="modal">
-        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
-            <h2 style="font-size:1.25rem; font-weight:700;">Configuración</h2>
-            <button class="close-modal" onclick="closeSettings()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted);">✕</button>
-        </div>
-        
-        <div class="form-group">
-            <label>Días antes para alerta (Actual: <span id="currentAlertDays">7</span>)</label>
-            <input type="number" id="alertDaysInput" class="form-control" value="7" min="1">
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">¿Cuántos días antes quieres que la tarea se marque como "Próxima"?</p>
-        </div>
-
-        <div class="form-group">
-            <button class="btn btn-edit btn-block" onclick="saveSettings()">Guardar Cambios</button>
-        </div>
-
-        <hr style="border:0; border-top:1px solid var(--border-color); margin: 2rem 0;">
-
-        <div class="form-group">
-            <label>Exportar Datos</label>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Descarga un archivo Excel (CSV) con todas tus tareas y su historial.</p>
-            <button class="btn btn-complete btn-block" onclick="exportToCSV()">
-                <i class="ph ph-download-simple"></i> Descargar Backup CSV
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL: Tareas del día (Calendario) -->
-<div class="modal-overlay" id="dayTasksModalOverlay">
-    <div class="modal">
-        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-            <h2 style="font-size:1.2rem; font-weight:700;">Tareas para el <span id="dayTaskDateTitle"></span></h2>
-            <button class="close-modal" onclick="closeDayTasks()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted);">✕</button>
-        </div>
-        <div id="dayTasksList" style="display:flex; flex-direction:column; gap:1rem;"></div>
-    </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-
-<script>
-    // --- CONFIGURACIÓN Y VARIABLES ---
-    const JSONBIN_API_KEY = CONFIG.JSONBIN_API_KEY;
-    const JSONBIN_BIN_ID = CONFIG.JSONBIN_BIN_ID;
-    const API_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-
-    let tasks = [];
-    let currentFilter = 'all';
-    let lastDeletedTask = null; // Para deshacer
-    let currentView = 'list'; // 'list' o 'calendar'
-    
-    // Variables Calendario
-    let calendarDate = new Date();
-
-    // Gestión del Tema
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    }
-
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-    }
-
-    function updateThemeIcon(theme) {
-        const icon = document.getElementById('themeIcon');
-        icon.className = theme === 'dark' ? 'ph ph-sun' : 'ph ph-moon';
-    }
-
-    // Inicialización
-    document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        loadTasks();
-        document.getElementById('searchInput').addEventListener('input', () => {
-            renderTasks();
-            renderCalendar();
-        });
-        
-        const alertDays = localStorage.getItem('alertDays') || 7;
-        document.getElementById('alertDaysInput').value = alertDays;
-        document.getElementById('currentAlertDays').innerText = alertDays;
-
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-    });
-
-    // --- LÓGICA JSONBIN ---
-    async function loadTasks() {
-        showToast('Sincronizando...', 'info');
-        try {
-            const response = await fetch(API_URL, { headers: { 'X-Master-Key': JSONBIN_API_KEY } });
-            if (!response.ok) throw new Error('Error de red');
-            const data = await response.json();
-            tasks = (data.record && Array.isArray(data.record)) ? data.record : [];
-            tasks = tasks.map(t => { if (!t.history) t.history = []; return t; });
+    <main>
+        <!-- PANEL DE ADMINISTRACIÓN (Solo visible si ?admin=true) -->
+        <div id="admin-panel" class="hidden">
+            <h3 style="color:var(--primary-dark);">🛠 Panel del Creador (Admin)</h3>
+            <p style="font-size:0.8rem; color:#666;">Edita aquí. Al terminar, copia el código y pégalo en el archivo HTML reemplazando 'const weeksData'.</p>
             
-            renderTasks(); renderCalendar(); updateStats();
-        } catch (e) {
-            console.error(e);
-            showToast('Error de conexión. Modo offline.', 'warning');
-            tasks = JSON.parse(localStorage.getItem('mantenimiento_app_tasks') || '[]');
-            renderTasks(); renderCalendar(); updateStats();
-        }
-    }
+            <div class="admin-controls">
+                <select id="admin-week-select" onchange="loadAdminData()" style="flex:1;"></select>
+            </div>
 
-    async function saveTasks() {
-        localStorage.setItem('mantenimiento_app_tasks', JSON.stringify(tasks));
-        try {
-            const res = await fetch(API_URL, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
-                body: JSON.stringify(tasks)
-            });
-            if(!res.ok) throw new Error('Save failed');
-        } catch(e) { showToast('Error guardando en la nube', 'warning'); }
-    }
+            <div style="text-align: left; display: grid; gap: 10px;">
+                <label style="font-size:0.8rem; font-weight:bold;">Título de la Semana:</label>
+                <input type="text" id="admin-title">
+                
+                <label style="font-size:0.8rem; font-weight:bold;">Enlace de la Foto (URL):</label>
+                <input type="text" id="admin-image">
+                
+                <label style="font-size:0.8rem; font-weight:bold;">Texto:</label>
+                <textarea id="admin-text" rows="4"></textarea>
+                
+                <button onclick="saveToMemory()" style="background:#4CAF50; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">💾 Guardar cambios en memoria</button>
+            </div>
 
-    // --- LÓGICA DE APP ---
-    function calculateNextDue(lastDate, val, type) {
-        const d = new Date(lastDate);
-        if(type==='days') d.setDate(d.getDate()+parseInt(val));
-        if(type==='months') d.setMonth(d.getMonth()+parseInt(val));
-        if(type==='years') d.setFullYear(d.getFullYear()+parseInt(val));
-        return d;
-    }
-    function getDiffDays(d1, d2) { return Math.round((d2-d1)/(1000*60*60*24)); }
-    function formatDate(str) { return new Date(str).toLocaleDateString('es-ES', {day:'numeric', month:'long', year:'numeric'}); }
+            <hr style="margin: 20px 0;">
+            <h4>3. Copia este código para GitHub:</h4>
+            <button onclick="generateCode()" class="btn" style="background:#333; padding: 10px;">📋 Generar Código de Actualización</button>
+            <textarea id="code-output" readonly onclick="this.select()" placeholder="Haz clic en 'Generar Código' aquí arriba..."></textarea>
+        </div>
 
-    function addTask(t) { tasks.push(t); saveTasks(); renderTasks(); renderCalendar(); showToast('Tarea añadida'); }
-    function updateTask(t) {
-        const i = tasks.findIndex(x => x.id == t.id);
-        if(i!==-1) { tasks[i] = t; saveTasks(); renderTasks(); renderCalendar(); showToast('Tarea editada'); }
-    }
+        <!-- VISTA USUARIO: SELECCIÓN FECHA -->
+        <section id="start-view" class="card">
+            <h2>Fecha de Concepción</h2>
+            <p style="color:#777;">Introduce la fecha para calcular el progreso y la cuenta regresiva.</p>
+            <input type="date" id="conceptionDate">
+            <button class="btn" onclick="startApp()">Empezar</button>
+        </section>
 
-    function completeTask(id) {
-        const i = tasks.findIndex(x => x.id == id);
-        if(i!==-1) {
-            const t = tasks[i];
-            const historyEntry = { date: t.lastDone, notes: t.notes || '' };
-            if (t.notes) { t.history.unshift(historyEntry); }
-            t.lastDone = new Date().toISOString().split('T')[0];
-            saveTasks(); renderTasks(); renderCalendar(); showToast('¡Completado! Historial guardado.', 'success');
-        }
-    }
-
-    function deleteTask(id) {
-        const i = tasks.findIndex(x => x.id == id);
-        if(i!==-1) {
-            lastDeletedTask = tasks[i]; // Guardar para deshacer
-            tasks = tasks.filter(t => t.id != id);
-            saveTasks(); renderTasks(); renderCalendar();
+        <!-- VISTA USUARIO: APP -->
+        <section id="app-view" class="hidden">
             
-            // Notificación con botón deshacer
-            showToast('Tarea eliminada', 'undo');
-        }
-    }
+            <!-- Tarjeta de Cuenta Regresiva -->
+            <div class="countdown-box">
+                <p style="margin:0; font-size:0.9rem;">Para el parto faltan:</p>
+                <div class="big-number" id="countdown-text">...</div>
+            </div>
 
-    // FUNCIÓN DESHACER
-    function undoDelete() {
-        if (lastDeletedTask) {
-            tasks.push(lastDeletedTask);
-            saveTasks();
-            renderTasks(); renderCalendar();
-            showToast('Tarea restaurada', 'success');
-            lastDeletedTask = null;
-        }
-    }
-
-    function filterTasks(s) {
-        currentFilter = s;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        renderTasks();
-        renderCalendar(); // Actualizar colores en calendario también
-    }
-
-    // --- MODALES ---
-    const taskModal = document.getElementById('taskModalOverlay');
-    const taskForm = document.getElementById('taskForm');
-    function openTaskModal(isEdit=false) {
-        taskModal.classList.add('open');
-        if(!isEdit) { 
-            document.getElementById('taskModalTitle').innerText='Nueva Tarea'; 
-            taskForm.reset(); 
-            document.getElementById('taskId').value=''; 
-            document.getElementById('lastDoneDate').value=new Date().toISOString().split('T')[0]; 
-        }
-    }
-    function closeTaskModal() { taskModal.classList.remove('open'); }
-    function editTask(id) {
-        const t = tasks.find(x => x.id == id);
-        if(!t) return;
-        document.getElementById('taskModalTitle').innerText='Editar Tarea';
-        document.getElementById('taskId').value=t.id; 
-        document.getElementById('taskName').value=t.name;
-        document.getElementById('taskCategory').value=t.category; 
-        document.getElementById('taskNotes').value=t.notes || '';
-        document.getElementById('lastDoneDate').value=t.lastDone;
-        document.getElementById('frequencyValue').value=t.frequencyValue; 
-        document.getElementById('frequencyType').value=t.frequencyType;
-        openTaskModal(true);
-    }
-    taskModal.addEventListener('click', e => { if(e.target===taskModal) closeTaskModal(); });
-    taskForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const id = document.getElementById('taskId').value;
-        const t = tasks.find(x => x.id == id);
-        const newT = { 
-            id: id?parseInt(id):Date.now(), 
-            name: document.getElementById('taskName').value, 
-            category: document.getElementById('taskCategory').value, 
-            notes: document.getElementById('taskNotes').value, 
-            lastDone: document.getElementById('lastDoneDate').value, 
-            frequencyValue: parseInt(document.getElementById('frequencyValue').value), 
-            frequencyType: document.getElementById('frequencyType').value,
-            history: t ? t.history : []
-        };
-        id ? updateTask(newT) : addTask(newT);
-        closeTaskModal();
-    });
-
-    // Historial
-    const historyModal = document.getElementById('historyModalOverlay');
-    function openHistory(id) {
-        const t = tasks.find(x => x.id == id);
-        if(!t) return;
-        document.getElementById('historyTaskName').innerText = t.name;
-        const container = document.getElementById('historyListContainer');
-        container.innerHTML = '';
-        if(!t.history || t.history.length === 0) container.innerHTML = '<li style="color:var(--text-muted)">No hay registros anteriores.</li>';
-        else {
-            t.history.forEach(h => {
-                const li = document.createElement('li');
-                li.className = 'history-item';
-                li.innerHTML = `<div class="history-date">${formatDate(h.date)}</div>${h.notes ? `<div class="history-notes">Nota: ${h.notes}</div>` : ''}`;
-                container.appendChild(li);
-            });
-        }
-        historyModal.classList.add('open');
-    }
-    function closeHistoryModal() { historyModal.classList.remove('open'); }
-    historyModal.addEventListener('click', e => { if(e.target===historyModal) closeHistoryModal(); });
-
-    // Configuración
-    const settingsModal = document.getElementById('settingsModalOverlay');
-    function openSettings() { settingsModal.classList.add('open'); }
-    function closeSettings() { settingsModal.classList.remove('open'); }
-    settingsModal.addEventListener('click', e => { if(e.target===settingsModal) closeSettings(); });
-    function saveSettings() {
-        const val = parseInt(document.getElementById('alertDaysInput').value);
-        if(val && val > 0) {
-            localStorage.setItem('alertDays', val);
-            document.getElementById('currentAlertDays').innerText = val;
-            renderTasks(); renderCalendar(); updateStats();
-            showToast('Configuración guardada', 'success');
-            closeSettings();
-        } else { showToast('Valor inválido', 'warning'); }
-    }
-    function exportToCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // UTF-8 BOM para Excel
-        csvContent += "Tarea,Categoría,Fecha Mantenimiento,Notas\n";
-        tasks.forEach(t => {
-            csvContent += `"${t.name}","${t.category}","${t.lastDone} (Actual)","${t.notes || ''}"\n`;
-            if (t.history && t.history.length > 0) {
-                t.history.forEach(h => { csvContent += `"${t.name}","${t.category}","${h.date}","${h.notes || ''}"\n`; });
-            }
-        });
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "mantenimiento_backup.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    // --- CALENDARIO LOGIC ---
-    function switchView(view) {
-        currentView = view;
-        if(view === 'list') {
-            document.getElementById('tasksContainer').style.display = 'grid';
-            document.getElementById('calendarContainer').classList.remove('active');
-            document.getElementById('btnViewList').classList.add('active');
-            document.getElementById('btnViewCalendar').classList.remove('active');
-        } else {
-            document.getElementById('tasksContainer').style.display = 'none';
-            document.getElementById('calendarContainer').classList.add('active');
-            document.getElementById('btnViewList').classList.remove('active');
-            document.getElementById('btnViewCalendar').classList.add('active');
-            renderCalendar();
-        }
-    }
-
-    function changeMonth(offset) {
-        calendarDate.setMonth(calendarDate.getMonth() + offset);
-        renderCalendar();
-    }
-
-    function renderCalendar() {
-        const grid = document.getElementById('calendarGrid');
-        const title = document.getElementById('calendarTitle');
-        grid.innerHTML = '';
-        
-        const year = calendarDate.getFullYear();
-        const month = calendarDate.getMonth();
-        const today = new Date();
-        
-        title.innerText = calendarDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-        
-        // Cabecera días
-        const days = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
-        days.forEach(d => {
-            const el = document.createElement('div');
-            el.className = 'cal-day-header';
-            el.innerText = d;
-            grid.appendChild(el);
-        });
-
-        // Datos calendario
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay(); // 0 es Domingo
-
-        // Celdas vacías
-        for (let i = 0; i < startingDay; i++) {
-            const el = document.createElement('div');
-            grid.appendChild(el);
-        }
-
-        // Mapeo de tareas a fechas para buscar rápido
-        const taskMap = {};
-        const alertThreshold = parseInt(localStorage.getItem('alertDays') || 7);
-
-        tasks.forEach(t => {
-            const next = calculateNextDue(t.lastDone, t.frequencyValue, t.frequencyType);
-            const days = getDiffDays(today, next);
-            const status = days < 0 ? 'overdue' : days <= alertThreshold ? 'soon' : 'ok';
+            <!-- Tarjeta de Progreso Actual -->
+            <div class="info-box">
+                <span id="disp-week" style="background:rgba(255,255,255,0.3); padding:5px 10px; border-radius:15px; font-weight:bold; font-size:0.9rem;">Semana 1</span>
+                <div class="big-number" style="margin-top:10px;"><span id="disp-day">1</span><span style="font-size:1.2rem;">/7</span></div>
+                <span class="label">Día actual de la semana</span>
+            </div>
             
-            // Si la tarea cae en este mes
-            if(next.getMonth() === month && next.getFullYear() === year) {
-                const dateKey = next.getDate();
-                if(!taskMap[dateKey]) taskMap[dateKey] = [];
-                taskMap[dateKey].push(status);
-            }
-        });
+            <!-- Contenido del Creador -->
+            <div class="card" style="text-align:left;">
+                <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1</h2>
+                <img id="disp-img" class="creator-img" src="" alt="Semana">
+                <div id="disp-text" class="creator-text">...</div>
+            </div>
 
-        // Días del mes
-        for (let i = 1; i <= daysInMonth; i++) {
-            const el = document.createElement('div');
-            el.className = 'cal-day';
-            if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                el.classList.add('today');
-            }
-
-            let dotsHtml = '<div class="cal-dots">';
-            if (taskMap[i]) {
-                // Mostrar máximo 3 puntos para no saturar
-                taskMap[i].slice(0, 3).forEach(status => {
-                    dotsHtml += `<div class="dot ${status}"></div>`;
-                });
-                if (taskMap[i].length > 3) dotsHtml += `<span style="font-size:0.7rem">+${taskMap[i].length - 3}</span>`;
-            }
-            dotsHtml += '</div>';
-
-            el.innerHTML = `<div class="cal-day-num">${i}</div>${dotsHtml}`;
+            <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:20px;">
+                <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(-1)">Anterior</button>
+                <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(1)">Siguiente</button>
+            </div>
             
-            // Click en día
-            el.onclick = () => showDayTasks(i, month, year);
-            
-            grid.appendChild(el);
-        }
-    }
+            <div style="text-align:center;">
+                <a href="#" onclick="location.reload()" style="color:#999; text-decoration:none; font-size:0.8rem;">Reiniciar fechas</a>
+            </div>
+        </section>
+    </main>
 
-    function showDayTasks(day, month, year) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        const displayDate = new Date(dateStr);
-        document.getElementById('dayTaskDateTitle').innerText = formatDate(dateStr);
+    <!-- FOOTER CON VERSIÓN -->
+    <footer>
+        <p>App Mi Bebé &copy; 2023</p>
+        <p style="margin-top:5px; font-weight:bold;">Versión v2.0</p>
+    </footer>
+
+    <script>
+        // --- APP VERSION v2.0 ---
         
-        const container = document.getElementById('dayTasksList');
-        container.innerHTML = '';
+        // --- GENERACIÓN DE 40 SEMANAS (Automático) ---
+        const weeksData = [];
         
-        const today = new Date(); today.setHours(0,0,0,0);
-        const targetDate = new Date(dateStr); targetDate.setHours(0,0,0,0);
-        
-        // Encontrar tareas que vencen ese día
-        const tasksThatDay = tasks.filter(t => {
-            const next = calculateNextDue(t.lastDone, t.frequencyValue, t.frequencyType);
-            next.setHours(0,0,0,0);
-            return next.getTime() === targetDate.getTime();
-        });
-
-        if(tasksThatDay.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-muted)">No hay tareas programadas para este día.</p>';
-        } else {
-            tasksThatDay.forEach(t => {
-                const div = document.createElement('div');
-                div.style.border = '1px solid var(--border-color)';
-                div.style.padding = '10px';
-                div.style.borderRadius = '8px';
-                div.innerHTML = `<strong>${t.name}</strong><br><span style="font-size:0.8rem; color:var(--text-muted)">${t.category}</span>`;
-                container.appendChild(div);
-            });
-        }
-        
-        document.getElementById('dayTasksModalOverlay').classList.add('open');
-    }
-    
-    function closeDayTasks() { document.getElementById('dayTasksModalOverlay').classList.remove('open'); }
-
-
-    // --- RENDERIZADO DE LISTA ---
-    function renderTasks() {
-        const container = document.getElementById('tasksContainer');
-        container.innerHTML = '';
-        const today = new Date(); today.setHours(0,0,0,0);
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const alertThreshold = parseInt(localStorage.getItem('alertDays') || 7);
-
-        let list = tasks.map(t => {
-            const next = calculateNextDue(t.lastDone, t.frequencyValue, t.frequencyType);
-            const days = getDiffDays(today, next);
-            const s = days < 0 ? 'overdue' : days <= alertThreshold ? 'soon' : 'ok';
-            return { ...t, nextDueDate: next, daysLeft: days, status: s };
-        });
-
-        if (currentFilter !== 'all') list = list.filter(t => t.status === currentFilter);
-        
-        if (searchTerm) {
-            list = list.filter(t => {
-                const matchName = t.name.toLowerCase().includes(searchTerm);
-                const matchNotes = t.notes && t.notes.toLowerCase().includes(searchTerm);
-                return matchName || matchNotes;
+        // Este bucle crea las 40 semanas automáticamente.
+        // El "seed" en la imagen asegura que cada semana tenga una foto distinta.
+        for (let i = 1; i <= 40; i++) {
+            weeksData.push({
+                week: i,
+                title: `Semana ${i} - Título`,
+                image: `https://picsum.photos/seed/baby${i}/600/400`, 
+                text: `Este es el texto para la semana ${i}. Edítalo en el panel de administración para poner tu información personalizada.`
             });
         }
 
-        list.sort((a,b) => a.daysLeft - b.daysLeft);
+        // --- LÓGICA DE LA APP ---
+        let state = { weekIndex: 0, day: 1, conception: null };
 
-        if(list.length === 0) { container.innerHTML = '<div class="empty-state"><p>No se encontraron tareas.</p></div>'; return; }
+        // Detectar si estamos en modo admin (?admin=true en la URL)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
 
-        list.forEach(t => {
-            let txt = '', bar=0;
-            if(t.status === 'overdue') { txt = `<span class="days-highlight">Vencida hace ${Math.abs(t.daysLeft)} días</span>`; bar=100; }
-            else if (t.daysLeft === 0) { txt = `<span class="days-highlight">¡Vence hoy!</span>`; bar=95; }
-            else if (t.status === 'soon') { txt = `<span class="days-highlight">Faltan ${t.daysLeft} días</span>`; bar=90; }
-            else { txt = `<span class="days-highlight">Faltan ${t.daysLeft} días</span>`; const totalDuration = getDiffDays(new Date(t.lastDone), t.nextDueDate); const elapsed = getDiffDays(new Date(t.lastDone), today); bar = totalDuration > 0 ? (elapsed / totalDuration) * 100 : 0; }
-
-            const notesHtml = t.notes ? `<div class="task-notes">${t.notes}</div>` : '';
-            const historyBtn = (t.history && t.history.length > 0) ? `<button class="history-btn" onclick="openHistory(${t.id})"><i class="ph ph-clock-counter-clockwise"></i> Ver historial (${t.history.length})</button>` : '';
-
-            const el = document.createElement('div');
-            el.className = `task-card status-${t.status}`;
-            el.innerHTML = `
-                <span class="task-category">${t.category}</span>
-                <h3 class="task-title">${t.name}</h3>
-                ${historyBtn}
-                ${notesHtml}
-                <div class="task-dates">
-                    <div class="date-row"><i class="ph ph-calendar-check"></i> Hecha el: ${formatDate(t.lastDone)}</div>
-                    <div class="date-row"><i class="ph ph-clock"></i> ${txt}</div>
-                    <div class="date-row" style="font-size:0.75rem; opacity:0.7;">(Fecha límite: ${formatDate(t.nextDueDate)})</div>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:${bar}%"></div></div>
-                <div class="task-actions">
-                    <button class="btn btn-edit" onclick="editTask(${t.id})"><i class="ph ph-pencil"></i></button>
-                    <button class="btn btn-complete" onclick="completeTask(${t.id})"><i class="ph ph-check"></i></button>
-                    <button class="btn btn-delete" onclick="deleteTask(${t.id})"><i class="ph ph-trash"></i></button>
-                </div>`;
-            container.appendChild(el);
-        });
-    }
-
-    function updateStats() {
-        const today = new Date(); today.setHours(0,0,0,0);
-        const alertThreshold = parseInt(localStorage.getItem('alertDays') || 7);
-        let o=0, s=0, k=0;
-        tasks.forEach(t => {
-            const d = getDiffDays(today, calculateNextDue(t.lastDone, t.frequencyValue, t.frequencyType));
-            if(d<0)o++; else if(d<=alertThreshold)s++; else k++;
-        });
-        document.getElementById('countOverdue').innerText = o;
-        document.getElementById('countSoon').innerText = s;
-        document.getElementById('countOk').innerText = k;
-    }
-
-    function showToast(msg, type='normal') {
-        const c = document.getElementById('toastContainer');
-        const t = document.createElement('div');
-        t.className = `toast ${type}`;
-        
-        let html = `<span>${msg}</span>`;
-        if (type === 'undo') {
-            html += `<button onclick="undoDelete()">Deshacer</button>`;
-            // Auto eliminar despues de 5s
-            setTimeout(() => {
-                t.style.opacity='0'; setTimeout(()=>t.remove(),300);
-                lastDeletedTask = null; // Olvidar tarea después de tiempo
-            }, 5000);
-        } else {
-            setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+        if (isAdmin) {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            initAdminPanel();
         }
-        
-        t.innerHTML = html; 
-        c.appendChild(t);
-    }
-</script>
+
+        function startApp() {
+            const dateVal = document.getElementById('conceptionDate').value;
+            if(!dateVal) return alert("Por favor selecciona una fecha.");
+            
+            state.conception = new Date(dateVal);
+            calculateStatus();
+            
+            document.getElementById('start-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            renderView();
+        }
+
+        function calculateStatus() {
+            const today = new Date();
+            // Aseguramos que la comparación sea a medianoche para evitar errores de horas
+            today.setHours(0,0,0,0);
+            const conceptionDate = new Date(state.conception);
+            conceptionDate.setHours(0,0,0,0);
+
+            // 1. Calcular Semana y Día Actual
+            const diffTime = today - conceptionDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            let wIndex = Math.floor(diffDays / 7);
+            let dIndex = (diffDays % 7) + 1; // Día 1 a 7
+
+            // Evitar índices negativos (si la fecha es futura)
+            if(wIndex < 0) { wIndex = 0; dIndex = 1; }
+            // Limitar a 40 semanas
+            if(wIndex >= 40) { wIndex = 39; dIndex = 7; }
+
+            state.weekIndex = wIndex;
+            state.day = dIndex;
+
+            // 2. Calcular Cuenta Regresiva (Restante)
+            // Asumimos 280 días de embarazo
+            const dueDate = new Date(conceptionDate);
+            dueDate.setDate(dueDate.getDate() + 280); // + 40 semanas
+
+            const remainingTime = dueDate - today;
+            const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+            
+            let remainingWeeks = 0;
+            let extraDays = 0;
+            let countdownText = "";
+
+            if (remainingDays <= 0) {
+                countdownText = "¡Ya es fecha o ha pasado!";
+            } else {
+                remainingWeeks = Math.floor(remainingDays / 7);
+                extraDays = remainingDays % 7;
+                countdownText = `${remainingWeeks} Semanas y ${extraDays} Días`;
+            }
+
+            state.countdownText = countdownText;
+        }
+
+        function renderView() {
+            const data = weeksData[state.weekIndex];
+            
+            // Renderizar Info Actual
+            document.getElementById('disp-week').innerText = `Semana ${state.weekIndex + 1}`;
+            document.getElementById('disp-day').innerText = state.day;
+            
+            // Renderizar Cuenta Regresiva
+            document.getElementById('countdown-text').innerText = state.countdownText;
+
+            // Renderizar Contenido
+            document.getElementById('disp-title').innerText = data.title;
+            document.getElementById('disp-text').innerText = data.text;
+            document.getElementById('disp-img').src = data.image;
+        }
+
+        function nav(dir) {
+            const newIdx = state.weekIndex + dir;
+            if(newIdx >= 0 && newIdx < weeksData.length) {
+                state.weekIndex = newIdx;
+                renderView();
+            }
+        }
+
+        // --- LÓGICA DE ADMINISTRACIÓN ---
+        function initAdminPanel() {
+            const select = document.getElementById('admin-week-select');
+            select.innerHTML = '';
+            weeksData.forEach((d, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = `Semana ${d.week}`;
+                select.appendChild(opt);
+            });
+            loadAdminData();
+        }
+
+        function loadAdminData() {
+            const idx = document.getElementById('admin-week-select').value;
+            const data = weeksData[idx];
+            document.getElementById('admin-title').value = data.title;
+            document.getElementById('admin-image').value = data.image;
+            document.getElementById('admin-text').value = data.text;
+        }
+
+        function saveToMemory() {
+            const idx = document.getElementById('admin-week-select').value;
+            const title = document.getElementById('admin-title').value;
+            const img = document.getElementById('admin-image').value;
+            const text = document.getElementById('admin-text').value;
+
+            weeksData[idx].title = title;
+            weeksData[idx].image = img;
+            weeksData[idx].text = text;
+            
+            alert("Guardado en memoria de la sesión.");
+        }
+
+        function generateCode() {
+            const codeString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
+            document.getElementById('code-output').value = codeString;
+        }
+    </script>
 </body>
 </html>
