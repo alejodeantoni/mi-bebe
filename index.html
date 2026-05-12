@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario del Bebé</title>
+    <style>
+        :root {
+            --primary: #FF9EAA; --primary-dark: #FF6B7D; --text: #5D5D5D; --bg: #FFF0F5; --white: #FFFFFF;
+            --shadow: 0 8px 20px rgba(255, 107, 125, 0.15); --admin-bg: #f4f4f4; --admin-border: #ddd;
+        }
+        body { font-family: 'Helvetica', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--white); padding: 1.5rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h1 { margin: 0; color: var(--primary-dark); }
+        
+        main { flex: 1; max-width: 600px; margin: 20px auto; width: 100%; padding: 0 15px; }
+        
+        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; }
+        input[type="date"] { padding: 15px; width: 100%; border: 2px solid #eee; border-radius: 10px; margin-bottom: 15px; }
+        
+        button.btn { background: var(--primary-dark); color: white; border: none; padding: 15px; width: 100%; border-radius: 25px; font-size: 1rem; cursor: pointer; font-weight: bold; }
+        button.btn:hover { opacity: 0.9; }
+        
+        /* Contenido de la semana */
+        .week-badge { background: var(--bg); color: var(--primary-dark); padding: 5px 15px; border-radius: 15px; font-weight: bold; }
+        .day-big { font-size: 3rem; color: var(--primary-dark); font-weight: 800; margin: 10px 0; }
+        .creator-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 300px; }
+        .creator-text { text-align: left; line-height: 1.6; white-space: pre-wrap; }
+        
+        /* ESTILOS DEL PANEL DE ADMINISTRACIÓN (OCULTO) */
+        #admin-panel { background: var(--admin-bg); padding: 20px; border: 2px solid var(--primary); border-radius: 15px; margin-bottom: 20px; }
+        .admin-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .admin-controls select, .admin-controls input, .admin-controls button { padding: 10px; border-radius: 5px; border: 1px solid var(--admin-border); }
+        .admin-controls input[type="text"] { flex: 1; }
+        textarea#code-output { width: 100%; height: 100px; font-family: monospace; font-size: 0.8rem; margin-top: 10px; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mi Bebé</h1>
+    </header>
+
+    <main>
+        <!-- PANEL DE ADMINISTRACIÓN (Solo visible si ?admin=true) -->
+        <div id="admin-panel" class="hidden">
+            <h3 style="color:var(--primary-dark);">🛠 Panel del Creador</h3>
+            <p style="font-size:0.8rem; color:#666;">Edita aquí. Al terminar, copia el código y pégalo en el archivo HTML reemplazando 'const weeksData'.</p>
+            
+            <div class="admin-controls">
+                <select id="admin-week-select" onchange="loadAdminData()">
+                    <!-- Se llenará con JS -->
+                </select>
+            </div>
+
+            <div style="text-align: left; display: grid; gap: 10px;">
+                <label>Título de la Semana:</label>
+                <input type="text" id="admin-title" style="width:100%; padding:8px;">
+                
+                <label>Enlace de la Foto (URL):</label>
+                <input type="text" id="admin-image" style="width:100%; padding:8px;">
+                
+                <label>Texto:</label>
+                <textarea id="admin-text" rows="5" style="width:100%; padding:8px;"></textarea>
+                
+                <button onclick="saveToMemory()" style="background:#4CAF50; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">💾 Guardar cambios en memoria</button>
+            </div>
+
+            <hr style="margin: 20px 0;">
+            <h4>3. Copia este código para GitHub:</h4>
+            <button onclick="generateCode()" class="btn" style="background:#333;">📋 Generar Código de Actualización</button>
+            <textarea id="code-output" readonly onclick="this.select()"></textarea>
+        </div>
+
+        <!-- VISTA USUARIO: SELECCIÓN FECHA -->
+        <section id="start-view" class="card">
+            <h2>Fecha de Concepción</h2>
+            <p>Introduce la fecha para comenzar.</p>
+            <input type="date" id="conceptionDate">
+            <button class="btn" onclick="startApp()">Empezar</button>
+        </section>
+
+        <!-- VISTA USUARIO: APP -->
+        <section id="app-view" class="hidden">
+            <div class="card">
+                <span id="disp-week" class="week-badge">Semana 1</span>
+                <div class="day-big"><span id="disp-day">1</span>/7</div>
+                <p>Día actual</p>
+            </div>
+            
+            <div class="card">
+                <h2 id="disp-title" style="color:var(--primary-dark);">Semana 1</h2>
+                <img id="disp-img" class="creator-img" src="" alt="Semana">
+                <div id="disp-text" class="creator-text">...</div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between;">
+                <button onclick="nav(-1)">Anterior</button>
+                <button onclick="nav(1)">Siguiente</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- DATOS INICIALES (Esto es lo que copiarás y pegarás después) ---
+        const weeksData = [
+            { week: 1, title: "Comienza la vida", image: "https://picsum.photos/seed/b1/600/400", text: "Semana 1 texto inicial." },
+            { week: 2, title: "Implantación", image: "https://picsum.photos/seed/b2/600/400", text: "Semana 2 texto inicial." },
+            { week: 3, title: "Corazón", image: "https://picsum.photos/seed/b3/600/400", text: "Semana 3 texto inicial." }
+        ];
+
+        // --- LÓGICA GENERAL ---
+        let state = { weekIndex: 0, day: 1, conception: null };
+
+        // Detectar si estamos en modo admin (?admin=true en la URL)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
+
+        if (isAdmin) {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            initAdminPanel();
+        }
+
+        function startApp() {
+            const dateVal = document.getElementById('conceptionDate').value;
+            if(!dateVal) return alert("Pon fecha");
+            
+            state.conception = new Date(dateVal);
+            calculateCurrentDate();
+            
+            document.getElementById('start-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            renderView();
+        }
+
+        function calculateCurrentDate() {
+            const diff = Math.abs(new Date() - state.conception);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let wIndex = Math.floor(days / 7);
+            let dIndex = (days % 7) + 1;
+            if(wIndex >= 40) wIndex = 39;
+            
+            state.weekIndex = wIndex;
+            state.day = dIndex;
+        }
+
+        function renderView() {
+            const data = weeksData[state.weekIndex];
+            document.getElementById('disp-week').innerText = `Semana ${state.weekIndex + 1}`;
+            document.getElementById('disp-day').innerText = state.day;
+            document.getElementById('disp-title').innerText = data.title;
+            document.getElementById('disp-text').innerText = data.text;
+            document.getElementById('disp-img').src = data.image;
+        }
+
+        function nav(dir) {
+            const newIdx = state.weekIndex + dir;
+            if(newIdx >= 0 && newIdx < weeksData.length) {
+                state.weekIndex = newIdx;
+                renderView();
+            }
+        }
+
+        // --- LÓGICA DE ADMINISTRACIÓN ---
+        function initAdminPanel() {
+            const select = document.getElementById('admin-week-select');
+            select.innerHTML = '';
+            weeksData.forEach((d, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = `Semana ${d.week}`;
+                select.appendChild(opt);
+            });
+            loadAdminData();
+        }
+
+        function loadAdminData() {
+            const idx = document.getElementById('admin-week-select').value;
+            const data = weeksData[idx];
+            document.getElementById('admin-title').value = data.title;
+            document.getElementById('admin-image').value = data.image;
+            document.getElementById('admin-text').value = data.text;
+        }
+
+        function saveToMemory() {
+            const idx = document.getElementById('admin-week-select').value;
+            const title = document.getElementById('admin-title').value;
+            const img = document.getElementById('admin-image').value;
+            const text = document.getElementById('admin-text').value;
+
+            // Actualizamos el array en memoria
+            weeksData[idx].title = title;
+            weeksData[idx].image = img;
+            weeksData[idx].text = text;
+            
+            alert("Guardado en memoria de la sesión. Ya puedes generar el código.");
+        }
+
+        function generateCode() {
+            // Convertimos el objeto a una cadena de texto bonita (JSON)
+            const codeString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
+            document.getElementById('code-output').value = codeString;
+        }
+    </script>
+</body>
+</html>
