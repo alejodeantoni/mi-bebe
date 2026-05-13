@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1077/1077114.png">
-    <title>Diario del Bebé v4.1</title>
+    <title>Diario del Bebé v4.2</title>
     <style>
         :root {
             --primary: #FF9EAA; --primary-dark: #FF6B7D; --secondary: #89CFF0; 
@@ -49,14 +49,14 @@
     <main>
         <!-- PANEL DE ADMINISTRACIÓN (ESTÁ OCULTO POR DEFECTO CON CLASE 'hidden') -->
         <div id="admin-panel" class="hidden">
-            <h3 style="color:var(--primary-dark);">🛠 Panel de Configuración v4.1</h3>
+            <h3 style="color:var(--primary-dark);">🛠 Panel de Configuración v4.2</h3>
             
             <!-- Conexión GitHub -->
             <div id="github-config" class="config-area">
-                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. Conexión con GitHub (Solo hacerlo una vez):</p>
+                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. Conexión con GitHub:</p>
                 <input type="text" id="gh-user" placeholder="Tu usuario (ej: alejodeantoni)">
                 <input type="text" id="gh-repo" placeholder="Nombre del repositorio">
-                <input type="password" id="gh-token" placeholder="Token de Acceso (Personal Access Token)">
+                <input type="password" id="gh-token" placeholder="Token de Acceso">
                 <button class="btn" style="padding:10px; font-size:0.9rem;" onclick="saveConfig()">Guardar Configuración</button>
             </div>
 
@@ -72,10 +72,10 @@
                 <label style="font-size:0.8rem; font-weight:bold;">Texto:</label>
                 <textarea id="admin-text" rows="4"></textarea>
                 
-                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">💾 Guardar en memoria local</button>
+                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">💾 Guardar en memoria</button>
                 
                 <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud">
-                    ☁️ Guardar en GitHub (Actualizar Web)
+                    ☁️ Guardar en GitHub
                 </button>
                 <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;"></p>
             </div>
@@ -120,11 +120,11 @@
 
     <footer>
         <p>App Mi Bebé &copy; 2023</p>
-        <p style="margin-top:5px; font-weight:bold;">Versión v4.1 (Corregido)</p>
+        <p style="margin-top:5px; font-weight:bold;">Versión v4.2 (Arreglado)</p>
     </footer>
 
     <script>
-        // --- APP VERSION v4.1 ---
+        // --- APP VERSION v4.2 ---
         const weeksData = [];
         for (let i = 1; i <= 40; i++) {
             weeksData.push({
@@ -141,17 +141,14 @@
 
         if (isAdmin) {
             document.getElementById('admin-panel').classList.remove('hidden');
-            // Rellenar inputs de config si existen
             if(ghConfig.user) document.getElementById('gh-user').value = ghConfig.user;
             if(ghConfig.repo) document.getElementById('gh-repo').value = ghConfig.repo;
             if(ghConfig.token) document.getElementById('gh-token').value = ghConfig.token;
             
-            // Ocultar panel de config si ya tiene datos
             if(ghConfig.token && ghConfig.user) {
                 document.getElementById('github-config').classList.add('hidden');
                 document.getElementById('github-config').innerHTML = `<button onclick="clearConfig()" style="background:#eee; border:none; border-radius:5px; cursor:pointer;">Borrar Credenciales</button>`;
             }
-
             initAdminPanel();
         }
 
@@ -237,7 +234,7 @@
             ghConfig.repo = document.getElementById('gh-repo').value;
             ghConfig.token = document.getElementById('gh-token').value;
             localStorage.setItem('gh_config', JSON.stringify(ghConfig));
-            alert("Configuración guardada en tu navegador.");
+            alert("Configuración guardada.");
             location.reload();
         }
 
@@ -246,10 +243,10 @@
             location.reload();
         }
 
-        // --- LÓGICA DE GITHUB API ---
+        // --- LÓGICA DE GITHUB API (CORREGIDA v4.2) ---
         async function pushToGitHub() {
             if (!ghConfig.user || !ghConfig.repo || !ghConfig.token) {
-                return alert("Faltan datos de conexión. Rellena la configuración de GitHub.");
+                return alert("Faltan datos de conexión.");
             }
 
             const btn = document.getElementById('btn-push');
@@ -258,45 +255,47 @@
             status.innerText = "Conectando con GitHub...";
 
             try {
-                // 1. Obtener el SHA del archivo actual
                 const urlGet = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/index.html`;
+                
+                // 1. Pedir info del archivo a GitHub
                 const res = await fetch(urlGet, {
                     headers: {
                         'Authorization': `token ${ghConfig.token}`,
                         'Accept': 'application/vnd.github.v3+json'
                     }
                 });
-                const data = await res.json();
-                const sha = data.sha; // Necesario para sobrescribir
 
-                // 2. Preparar el nuevo contenido
-                // Solo actualizamos la variable weeksData, NO el HTML completo (para evitar el bug del panel pegado)
+                if (!res.ok) throw new Error("No se pudo conectar con el repositorio. Revisa usuario y token.");
+
+                // 2. Decodificar la respuesta JSON (Aquí estaba el error antes)
+                const data = await res.json();
+                const sha = data.sha;
+                
+                // 3. Decodificar el contenido Base64 del archivo
+                // data.content es el HTML en base64. data.encoding es base64.
+                // Quitamos saltos de línea y decodificamos.
+                const encodedContent = data.content.replace(/\n/g, ''); 
+                const currentHtmlRaw = atob(encodedContent);
+
+                // 4. Modificar el contenido HTML (Solo la variable weeksData)
                 const newWeeksDataString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
                 
-                // IMPORTANTE: En lugar de usar outerHTML (que pega el estado visual), usamos fetch para obtener el HTML crudo puro.
-                // Esto garantiza que las clases CSS (hidden) se mantengan correctas.
-                const currentHtmlRaw = await fetch(urlGet)
-                    .then(r => r.text())
-                    .then(text => atob(text.replace(/\\n/g, ""))); // Decodificar Base64
+                if (!/const weeksData = \[([\s\S]*?)\];/.test(currentHtmlRaw)) {
+                    throw new Error("No se encontró la estructura weeksData en el archivo.");
+                }
 
-                let newHtmlContent = currentHtmlRaw;
-                const regex = /const weeksData = \[([\s\S]*?)\];/;
-                
-                if (!regex.test(newHtmlContent)) throw new Error("Error al buscar datos en código.");
+                const newHtmlContent = currentHtmlRaw.replace(/const weeksData = \[([\s\S]*?)\];/, newWeeksDataString + ";");
 
-                newHtmlContent = newHtmlContent.replace(regex, newWeeksDataString + ";");
-
-                // 3. Subir a GitHub (PUT)
+                // 5. Subir a GitHub
                 const contentBase64 = utf8_to_b64(newHtmlContent);
                 
-                const urlPut = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/index.html`;
                 const putData = {
-                    message: "Update content via Web App v4.1",
+                    message: "Update content via Web App v4.2",
                     content: contentBase64,
                     sha: sha
                 };
 
-                const putRes = await fetch(urlPut, {
+                const putRes = await fetch(urlGet, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${ghConfig.token}`,
@@ -306,11 +305,11 @@
                 });
 
                 if(putRes.ok) {
-                    status.innerText = "¡Guardado en GitHub con éxito!";
+                    status.innerText = "¡Guardado con éxito!";
                     status.style.color = "green";
                     setTimeout(() => { status.innerText = ""; btn.disabled = false; }, 3000);
                 } else {
-                    throw new Error("Error al subir archivo: " + putRes.statusText);
+                    throw new Error("Error al guardar: " + putRes.statusText);
                 }
 
             } catch (error) {
@@ -321,7 +320,6 @@
             }
         }
 
-        // Helper para Base64 con UTF-8 (Emojis y acentos)
         function utf8_to_b64(str) {
             return window.btoa(unescape(encodeURIComponent(str)));
         }
