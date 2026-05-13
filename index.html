@@ -3,110 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ARREGLO FAVICON (Icono de la pestaña) -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1077/1077114.png">
-    <title>Diario del Bebé v3.0.1</title>
+    <title>Diario del Bebé v4.0</title>
     <style>
         :root {
-            --primary: #FF9EAA; 
-            --primary-dark: #FF6B7D; 
-            --secondary: #89CFF0; 
-            --text: #5D5D5D; 
-            --bg: #FFF0F5; 
-            --white: #FFFFFF;
+            --primary: #FF9EAA; --primary-dark: #FF6B7D; --secondary: #89CFF0; 
+            --text: #5D5D5D; --bg: #FFF0F5; --white: #FFFFFF;
             --shadow: 0 8px 20px rgba(255, 107, 125, 0.15); 
-            --admin-bg: #fff5f6; 
-            --admin-border: #FFC0CB;
+            --admin-bg: #fff5f6; --admin-border: #FFC0CB;
         }
-        
-        body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            background: var(--bg); color: var(--text); 
-            margin: 0; padding: 0; 
-            display: flex; flex-direction: column; min-height: 100vh; 
-        }
-        
-        header { 
-            background: var(--white); padding: 1.5rem; text-align: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--white); padding: 1.5rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         h1 { margin: 0; color: var(--primary-dark); }
-        
-        main { 
-            flex: 1; max-width: 600px; margin: 20px auto; 
-            width: 100%; padding: 0 15px; 
-        }
-        
-        .card { 
-            background: var(--white); border-radius: 15px; 
-            padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; 
-            text-align: center; 
-        }
-
-        input[type="date"], input[type="text"] { 
-            padding: 15px; width: 100%; border: 2px solid #eee; 
-            border-radius: 10px; margin-bottom: 15px; font-size: 1rem; 
-        }
-        
-        button.btn { 
-            background: var(--primary-dark); color: white; border: none; 
-            padding: 15px; width: 100%; border-radius: 25px; 
-            font-size: 1rem; cursor: pointer; font-weight: bold; 
-        }
+        main { flex: 1; max-width: 600px; margin: 20px auto; width: 100%; padding: 0 15px; }
+        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; }
+        input[type="date"], input[type="text"], input[type="password"] { padding: 15px; width: 100%; border: 2px solid #eee; border-radius: 10px; margin-bottom: 15px; font-size: 1rem; box-sizing: border-box; }
+        button.btn { background: var(--primary-dark); color: white; border: none; padding: 15px; width: 100%; border-radius: 25px; font-size: 1rem; cursor: pointer; font-weight: bold; }
         button.btn:hover { opacity: 0.9; }
-
-        /* Estilos de las tarjetas de información */
-        .info-box {
-            background: linear-gradient(135deg, var(--primary), #FFB3C1);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
         
-        .countdown-box {
-            background: linear-gradient(135deg, #89CFF0, #4682B4); /* Azul */
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-
+        .info-box { background: linear-gradient(135deg, var(--primary), #FFB3C1); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .countdown-box { background: linear-gradient(135deg, #89CFF0, #4682B4); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: var(--shadow); }
         .big-number { font-size: 2.5rem; font-weight: 800; line-height: 1; }
         .label { font-size: 0.9rem; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; }
-
         .creator-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 300px; }
         .creator-text { text-align: left; line-height: 1.6; white-space: pre-wrap; }
         
-        /* ESTILOS DEL PANEL DE ADMINISTRACIÓN v3.0 */
-        #admin-panel { 
-            background: var(--admin-bg); padding: 20px; border: 2px dashed var(--admin-border); 
-            border-radius: 15px; margin-bottom: 20px; 
-        }
+        /* Panel Admin v4.0 */
+        #admin-panel { background: var(--admin-bg); padding: 20px; border: 2px dashed var(--admin-border); border-radius: 15px; margin-bottom: 20px; }
         .admin-controls { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-        .admin-controls select, .admin-controls input, .admin-controls button, .admin-controls textarea { 
-            padding: 10px; border-radius: 5px; border: 1px solid var(--admin-border); 
-        }
+        .admin-controls select, .admin-controls input, .admin-controls button, .admin-controls textarea { padding: 10px; border-radius: 5px; border: 1px solid var(--admin-border); }
         .admin-controls input[type="text"] { flex: 1; }
-        
-        .btn-download {
-            background: #4CAF50 !important;
-            margin-top: 10px;
-        }
-
+        .btn-save-cloud { background: #2196F3 !important; margin-top: 10px; }
+        .btn-save-cloud:disabled { background: #ccc !important; cursor: not-allowed; }
+        .config-area { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #ddd; }
         .hidden { display: none !important; }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.8rem;
-            color: #999;
-            border-top: 1px solid #eee;
-            margin-top: auto;
-        }
+        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #999; border-top: 1px solid #eee; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -116,160 +47,144 @@
     </header>
 
     <main>
-        <!-- PANEL DE ADMINISTRACIÓN (Solo visible si ?admin=true) -->
+        <!-- PANEL DE ADMINISTRACIÓN -->
         <div id="admin-panel" class="hidden">
-            <h3 style="color:var(--primary-dark);">🛠 Panel de Configuración</h3>
-            <p style="font-size:0.85rem; color:#666;">Edita las semanas aquí. Al terminar, descarga el archivo y súbelo a GitHub.</p>
+            <h3 style="color:var(--primary-dark);">🛠 Panel de Configuración v4.0</h3>
             
+            <!-- Conexión GitHub -->
+            <div id="github-config" class="config-area">
+                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. Conexión con GitHub (Solo hacerlo una vez):</p>
+                <input type="text" id="gh-user" placeholder="Tu usuario (ej: alejodeantoni)">
+                <input type="text" id="gh-repo" placeholder="Nombre del repositorio">
+                <input type="password" id="gh-token" placeholder="Token de Acceso (Personal Access Token)">
+                <button class="btn" style="padding:10px; font-size:0.9rem;" onclick="saveConfig()">Guardar Configuración</button>
+            </div>
+
             <div class="admin-controls">
                 <select id="admin-week-select" onchange="loadAdminData()" style="flex:1;"></select>
             </div>
 
             <div style="text-align: left; display: grid; gap: 10px;">
-                <label style="font-size:0.8rem; font-weight:bold;">Título de la Semana:</label>
+                <label style="font-size:0.8rem; font-weight:bold;">Título:</label>
                 <input type="text" id="admin-title">
-                
-                <label style="font-size:0.8rem; font-weight:bold;">Enlace de la Foto (URL):</label>
+                <label style="font-size:0.8rem; font-weight:bold;">Foto (URL):</label>
                 <input type="text" id="admin-image">
-                
                 <label style="font-size:0.8rem; font-weight:bold;">Texto:</label>
                 <textarea id="admin-text" rows="4"></textarea>
                 
-                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">💾 Guardar cambios en vista previa</button>
-                <button onclick="downloadUpdatedFile()" class="btn btn-download">📥 Descargar Archivo Actualizado (HTML)</button>
+                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">💾 Guardar en memoria local</button>
+                
+                <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud">
+                    ☁️ Guardar en GitHub (Actualizar Web)
+                </button>
+                <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;"></p>
             </div>
         </div>
 
-        <!-- VISTA USUARIO: SELECCIÓN FECHA -->
+        <!-- VISTA INICIO -->
         <section id="start-view" class="card">
             <h2>¡Empecemos!</h2>
             <p style="color:#777;">Introduce los datos para personalizar el diario.</p>
-            
             <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Nombre del bebé:</label>
-            <input type="text" id="babyName" placeholder="Ej: Lucas, Sofía, Benjamín...">
-
+            <input type="text" id="babyName" placeholder="Ej: Lucas, Sofía...">
             <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Fecha de Concepción:</label>
             <input type="date" id="conceptionDate">
-            
             <button class="btn" onclick="startApp()">Ver diario</button>
         </section>
 
-        <!-- VISTA USUARIO: APP -->
+        <!-- VISTA APP -->
         <section id="app-view" class="hidden">
-            
-            <!-- Tarjeta de Cuenta Regresiva -->
             <div class="countdown-box">
                 <p style="margin:0; font-size:0.9rem;">Para el parto faltan:</p>
                 <div class="big-number" id="countdown-text">...</div>
             </div>
-
-            <!-- Tarjeta de Progreso Actual -->
             <div class="info-box">
                 <span id="disp-week" style="background:rgba(255,255,255,0.3); padding:5px 10px; border-radius:15px; font-weight:bold; font-size:0.9rem;">Semana 1</span>
                 <div class="big-number" style="margin-top:10px;"><span id="disp-day">1</span><span style="font-size:1.2rem;">/7</span></div>
                 <span class="label">Día actual de la semana</span>
             </div>
-            
-            <!-- Contenido del Creador -->
             <div class="card" style="text-align:left;">
                 <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1</h2>
                 <img id="disp-img" class="creator-img" src="" alt="Semana">
                 <div id="disp-text" class="creator-text">...</div>
             </div>
-
             <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:20px;">
                 <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(-1)">Anterior</button>
                 <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(1)">Siguiente</button>
             </div>
-            
             <div style="text-align:center;">
                 <a href="#" onclick="location.reload()" style="color:#999; text-decoration:none; font-size:0.8rem;">Reiniciar datos</a>
             </div>
         </section>
     </main>
 
-    <!-- FOOTER CON VERSIÓN -->
     <footer>
         <p>App Mi Bebé &copy; 2023</p>
-        <p style="margin-top:5px; font-weight:bold;">Versión v3.0.1</p>
+        <p style="margin-top:5px; font-weight:bold;">Versión v4.0 (Cloud API)</p>
     </footer>
 
     <script>
-        // --- APP VERSION v3.0.1 (Icono Favicon Arreglado) ---
-        
-        // --- GENERACIÓN DE 40 SEMANAS (Automático) ---
+        // --- APP VERSION v4.0 ---
         const weeksData = [];
         for (let i = 1; i <= 40; i++) {
             weeksData.push({
-                week: i,
-                title: `Semana ${i} - Título`,
-                image: `https://picsum.photos/seed/baby${i}/600/400`, 
-                text: `Este es el texto para la semana ${i}. Edítalo en el panel de administración para poner tu información personalizada.`
+                week: i, title: `Semana ${i} - Título`, image: `https://picsum.photos/seed/baby${i}/600/400`, text: `Texto para la semana ${i}.`
             });
         }
 
-        // --- LÓGICA DE LA APP ---
         let state = { weekIndex: 0, day: 1, conception: null, babyName: "" };
-
-        // Detectar si estamos en modo admin (?admin=true en la URL)
         const urlParams = new URLSearchParams(window.location.search);
         const isAdmin = urlParams.get('admin') === 'true';
 
+        // Cargar Config LocalStorage
+        let ghConfig = JSON.parse(localStorage.getItem('gh_config')) || { user: '', repo: '', token: '' };
+
         if (isAdmin) {
             document.getElementById('admin-panel').classList.remove('hidden');
+            // Rellenar inputs de config si existen
+            if(ghConfig.user) document.getElementById('gh-user').value = ghConfig.user;
+            if(ghConfig.repo) document.getElementById('gh-repo').value = ghConfig.repo;
+            if(ghConfig.token) document.getElementById('gh-token').value = ghConfig.token;
+            
+            // Ocultar panel de config si ya tiene datos
+            if(ghConfig.token && ghConfig.user) {
+                document.getElementById('github-config').classList.add('hidden');
+                document.getElementById('github-config').innerHTML = `<button onclick="clearConfig()" style="background:#eee; border:none; border-radius:5px; cursor:pointer;">Borrar Credenciales</button>`;
+            }
+
             initAdminPanel();
         }
 
+        // --- LÓGICA DE USUARIO ---
         function startApp() {
             const dateVal = document.getElementById('conceptionDate').value;
             const nameVal = document.getElementById('babyName').value;
-
             if(!dateVal) return alert("Por favor selecciona una fecha.");
             
             state.conception = new Date(dateVal);
-            state.babyName = nameVal || "Mi Bebé"; 
-            
-            calculateStatus();
-            
+            state.babyName = nameVal || "Mi Bebé"; calculateStatus();
             document.querySelector('header h1').innerText = `👶 ${state.babyName}`;
-
             document.getElementById('start-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
             renderView();
         }
 
         function calculateStatus() {
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const conceptionDate = new Date(state.conception);
-            conceptionDate.setHours(0,0,0,0);
-
+            const today = new Date(); today.setHours(0,0,0,0);
+            const conceptionDate = new Date(state.conception); conceptionDate.setHours(0,0,0,0);
             const diffTime = today - conceptionDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
             let wIndex = Math.floor(diffDays / 7);
             let dIndex = (diffDays % 7) + 1; 
-
             if(wIndex < 0) { wIndex = 0; dIndex = 1; }
             if(wIndex >= 40) { wIndex = 39; dIndex = 7; }
-
-            state.weekIndex = wIndex;
-            state.day = dIndex;
-
-            const dueDate = new Date(conceptionDate);
-            dueDate.setDate(dueDate.getDate() + 280); 
-
+            state.weekIndex = wIndex; state.day = dIndex;
+            const dueDate = new Date(conceptionDate); dueDate.setDate(dueDate.getDate() + 280); 
             const remainingTime = dueDate - today;
             const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-            
             let countdownText = "";
-            if (remainingDays <= 0) {
-                countdownText = "¡Ya es fecha o ha pasado!";
-            } else {
-                let remainingWeeks = Math.floor(remainingDays / 7);
-                let extraDays = remainingDays % 7;
-                countdownText = `${remainingWeeks} Semanas y ${extraDays} Días`;
-            }
+            if (remainingDays <= 0) { countdownText = "¡Ya es fecha o ha pasado!"; }
+            else { let remainingWeeks = Math.floor(remainingDays / 7); let extraDays = remainingDays % 7; countdownText = `${remainingWeeks} Semanas y ${extraDays} Días`; }
             state.countdownText = countdownText;
         }
 
@@ -285,20 +200,16 @@
 
         function nav(dir) {
             const newIdx = state.weekIndex + dir;
-            if(newIdx >= 0 && newIdx < weeksData.length) {
-                state.weekIndex = newIdx;
-                renderView();
-            }
+            if(newIdx >= 0 && newIdx < weeksData.length) { state.weekIndex = newIdx; renderView(); }
         }
 
-        // --- LÓGICA DE ADMINISTRACIÓN v3.0 ---
+        // --- LÓGICA DE ADMIN ---
         function initAdminPanel() {
             const select = document.getElementById('admin-week-select');
             select.innerHTML = '';
             weeksData.forEach((d, i) => {
                 const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = `Semana ${d.week}`;
+                opt.value = i; opt.text = `Semana ${d.week}`;
                 select.appendChild(opt);
             });
             loadAdminData();
@@ -317,33 +228,98 @@
             weeksData[idx].title = document.getElementById('admin-title').value;
             weeksData[idx].image = document.getElementById('admin-image').value;
             weeksData[idx].text = document.getElementById('admin-text').value;
-            alert("Cambios guardados temporalmente. Recuerda descargar el archivo al terminar.");
-            
-            // Actualizamos la vista previa si estamos en modo app
+            alert("Guardado en memoria.");
             renderView();
         }
 
-        // MÉTODO: Generar descarga HTML
-        function downloadUpdatedFile() {
-            let htmlContent = document.documentElement.outerHTML;
-            const newWeeksDataString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
-            const regex = /const weeksData = \[([\s\S]*?)\];/;
-            
-            if (regex.test(htmlContent)) {
-                htmlContent = htmlContent.replace(regex, newWeeksDataString + ";");
-            } else {
-                alert("Error: No se encontró la variable weeksData en el código.");
-                return;
+        function saveConfig() {
+            ghConfig.user = document.getElementById('gh-user').value;
+            ghConfig.repo = document.getElementById('gh-repo').value;
+            ghConfig.token = document.getElementById('gh-token').value;
+            localStorage.setItem('gh_config', JSON.stringify(ghConfig));
+            alert("Configuración guardada en tu navegador.");
+            location.reload();
+        }
+
+        function clearConfig() {
+            localStorage.removeItem('gh_config');
+            location.reload();
+        }
+
+        // --- LÓGICA DE GITHUB API ---
+        async function pushToGitHub() {
+            if (!ghConfig.user || !ghConfig.repo || !ghConfig.token) {
+                return alert("Faltan datos de conexión. Rellena la configuración de GitHub.");
             }
 
-            const blob = new Blob([htmlContent], {type: 'text/html'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'index.html'; 
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            const btn = document.getElementById('btn-push');
+            const status = document.getElementById('status-msg');
+            btn.disabled = true;
+            status.innerText = "Conectando con GitHub...";
+
+            try {
+                // 1. Obtener el SHA del archivo actual
+                const urlGet = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/index.html`;
+                const res = await fetch(urlGet, {
+                    headers: {
+                        'Authorization': `token ${ghConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                const data = await res.json();
+                const sha = data.sha; // Necesario para sobrescribir
+
+                // 2. Preparar el nuevo contenido
+                // Actualizamos el objeto weeksData en el HTML
+                const newWeeksDataString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
+                
+                let newHtmlContent = document.documentElement.outerHTML;
+                const regex = /const weeksData = \[([\s\S]*?)\];/;
+                
+                if (!regex.test(newHtmlContent)) throw new Error("Error al buscar datos en código.");
+
+                newHtmlContent = newHtmlContent.replace(regex, newWeeksDataString + ";");
+
+                // 3. Subir a GitHub (PUT)
+                const contentBase64 = utf8_to_b64(newHtmlContent);
+                
+                const urlPut = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/index.html`;
+                const putData = {
+                    message: "Update content via Web App",
+                    content: contentBase64,
+                    sha: sha
+                };
+
+                const putRes = await fetch(urlPut, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${ghConfig.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(putData)
+                });
+
+                if(putRes.ok) {
+                    status.innerText = "¡Guardado en GitHub con éxito!";
+                    status.style.color = "green";
+                    setTimeout(() => { status.innerText = ""; btn.disabled = false; }, 3000);
+                } else {
+                    throw new Error("Error al subir archivo: " + putRes.statusText);
+                }
+
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Error: " + error.message;
+                status.style.color = "red";
+                btn.disabled = false;
+            }
         }
+
+        // Helper para Base64 con UTF-8 (Emojis y acentos)
+        function utf8_to_b64(str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        }
+
     </script>
 </body>
 </html>
