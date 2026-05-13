@@ -82,7 +82,7 @@
                 <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud" disabled="">
                     ☁️ Guardar en GitHub (Actualizar Web)
                 </button>
-                <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;">Conectando con GitHub...</p>
+                <p id="status-msg" style="font-size: 0.8rem; text-align: center; color: green; height: 20px;">Conectando con GitHub...</p>
             </div>
         </div>
 
@@ -101,7 +101,7 @@
         <section id="app-view" class="hidden">
             <div class="countdown-box">
                 <p style="margin:0; font-size:0.9rem;">Para el parto faltan:</p>
-                <div class="big-number" id="countdown-text">...</div>
+                <div class="big-number" id="countdown-text">undefined</div>
             </div>
             <div class="info-box">
                 <span id="disp-week" style="background:rgba(255,255,255,0.3); padding:5px 10px; border-radius:15px; font-weight:bold; font-size:0.9rem;">Semana 1</span>
@@ -109,9 +109,9 @@
                 <span class="label">Día actual de la semana</span>
             </div>
             <div class="card" style="text-align:left;">
-                <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1</h2>
-                <img id="disp-img" class="creator-img" src="" alt="Semana">
-                <div id="disp-text" class="creator-text">...</div>
+                <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1 - Título</h2>
+                <img id="disp-img" class="creator-img" src="https://picsum.photos/seed/baby1/600/400" alt="Semana">
+                <div id="disp-text" class="creator-text">A</div>
             </div>
             <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:20px;">
                 <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(-1)">Anterior</button>
@@ -135,7 +135,7 @@
         "week": 1,
         "title": "Semana 1 - Título",
         "image": "https://picsum.photos/seed/baby1/600/400",
-        "text": "Texto para la semana 1."
+        "text": "A"
     },
     {
         "week": 2,
