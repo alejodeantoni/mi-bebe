@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1077/1077114.png">
-    <title>Diario del BebÃ© v4.2</title>
+    <title>Diario del BebÃÂ© v4.2</title>
     <style>
         :root {
             --primary: #FF9EAA; --primary-dark: #FF6B7D; --secondary: #89CFF0; 
@@ -43,21 +43,21 @@
 <body>
 
     <header>
-        <h1 id="header-title">ð¶ Mi BebÃ©</h1>
+        <h1 id="header-title">Ã°ÂÂÂ¶ Mi BebÃÂ©</h1>
     </header>
 
     <main>
-        <!-- PANEL DE ADMINISTRACIÃN (ESTÃ OCULTO POR DEFECTO CON CLASE 'hidden') -->
+        <!-- PANEL DE ADMINISTRACIÃÂN (ESTÃÂ OCULTO POR DEFECTO CON CLASE 'hidden') -->
         <div id="admin-panel" class="hidden">
-            <h3 style="color:var(--primary-dark);">ð  Panel de ConfiguraciÃ³n v4.2</h3>
+            <h3 style="color:var(--primary-dark);">Ã°ÂÂÂ  Panel de ConfiguraciÃÂ³n v4.2</h3>
             
-            <!-- ConexiÃ³n GitHub -->
+            <!-- ConexiÃÂ³n GitHub -->
             <div id="github-config" class="config-area">
-                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. ConexiÃ³n con GitHub:</p>
+                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. ConexiÃÂ³n con GitHub:</p>
                 <input type="text" id="gh-user" placeholder="Tu usuario (ej: alejodeantoni)">
                 <input type="text" id="gh-repo" placeholder="Nombre del repositorio">
                 <input type="password" id="gh-token" placeholder="Token de Acceso">
-                <button class="btn" style="padding:10px; font-size:0.9rem;" onclick="saveConfig()">Guardar ConfiguraciÃ³n</button>
+                <button class="btn" style="padding:10px; font-size:0.9rem;" onclick="saveConfig()">Guardar ConfiguraciÃÂ³n</button>
             </div>
 
             <div class="admin-controls">
@@ -65,17 +65,17 @@
             </div>
 
             <div style="text-align: left; display: grid; gap: 10px;">
-                <label style="font-size:0.8rem; font-weight:bold;">TÃ­tulo:</label>
+                <label style="font-size:0.8rem; font-weight:bold;">TÃÂ­tulo:</label>
                 <input type="text" id="admin-title">
                 <label style="font-size:0.8rem; font-weight:bold;">Foto (URL):</label>
                 <input type="text" id="admin-image">
                 <label style="font-size:0.8rem; font-weight:bold;">Texto:</label>
                 <textarea id="admin-text" rows="4"></textarea>
                 
-                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">ð¾ Guardar en memoria</button>
+                <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">Ã°ÂÂÂ¾ Guardar en memoria</button>
                 
                 <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud">
-                    âï¸ Guardar en GitHub
+                    Ã¢ÂÂÃ¯Â¸Â Guardar en GitHub
                 </button>
                 <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;"></p>
             </div>
@@ -83,11 +83,11 @@
 
         <!-- VISTA INICIO -->
         <section id="start-view" class="card">
-            <h2>Â¡Empecemos!</h2>
+            <h2>ÃÂ¡Empecemos!</h2>
             <p style="color:#777;">Introduce los datos para personalizar el diario.</p>
-            <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Nombre del bebÃ©:</label>
-            <input type="text" id="babyName" placeholder="Ej: Lucas, SofÃ­a...">
-            <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Fecha de ConcepciÃ³n:</label>
+            <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Nombre del bebÃÂ©:</label>
+            <input type="text" id="babyName" placeholder="Ej: Lucas, SofÃÂ­a...">
+            <label style="text-align:left; font-weight:bold; display:block; margin-bottom:5px;">Fecha de ConcepciÃÂ³n:</label>
             <input type="date" id="conceptionDate">
             <button class="btn" onclick="startApp()">Ver diario</button>
         </section>
@@ -101,7 +101,7 @@
             <div class="info-box">
                 <span id="disp-week" style="background:rgba(255,255,255,0.3); padding:5px 10px; border-radius:15px; font-weight:bold; font-size:0.9rem;">Semana 1</span>
                 <div class="big-number" style="margin-top:10px;"><span id="disp-day">1</span><span style="font-size:1.2rem;">/7</span></div>
-                <span class="label">DÃ­a actual de la semana</span>
+                <span class="label">DÃÂ­a actual de la semana</span>
             </div>
             <div class="card" style="text-align:left;">
                 <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1</h2>
@@ -119,8 +119,8 @@
     </main>
 
     <footer>
-        <p>App Mi BebÃ© &copy; 2023</p>
-        <p style="margin-top:5px; font-weight:bold;">VersiÃ³n v4.2 (Arreglado)</p>
+        <p>App Mi BebÃÂ© &copy; 2023</p>
+        <p style="margin-top:5px; font-weight:bold;">VersiÃÂ³n v4.2 (Arreglado)</p>
     </footer>
 
     <script>
@@ -129,8 +129,8 @@
     {
         "week": 1,
         "title": "Semana 1 - Título",
-        "image": "https://picsum.photos/seed/baby1/600/400",
-        "text": "Texto para la semanzza 1."
+        "image": "https://github.com/alejodeantoni/mi-bebe/blob/main/img/semana1.png",
+        "text": "Texto para la semanbba 1."
     },
     {
         "week": 2,
@@ -366,10 +366,10 @@
         "image": "https://picsum.photos/seed/baby40/600/400",
         "text": "Texto para la semana 40."
     }
-];;
+];;;
         for (let i = 1; i <= 40; i++) {
             weeksData.push({
-                week: i, title: `Semana ${i} - TÃ­tulo`, image: `https://picsum.photos/seed/baby${i}/600/400`, text: `Texto para la semana ${i}.`
+                week: i, title: `Semana ${i} - TÃÂ­tulo`, image: `https://picsum.photos/seed/baby${i}/600/400`, text: `Texto para la semana ${i}.`
             });
         }
 
@@ -393,15 +393,15 @@
             initAdminPanel();
         }
 
-        // --- LÃGICA DE USUARIO ---
+        // --- LÃÂGICA DE USUARIO ---
         function startApp() {
             const dateVal = document.getElementById('conceptionDate').value;
             const nameVal = document.getElementById('babyName').value;
             if(!dateVal) return alert("Por favor selecciona una fecha.");
             
             state.conception = new Date(dateVal);
-            state.babyName = nameVal || "Mi BebÃ©"; calculateStatus();
-            document.querySelector('header h1').innerText = `ð¶ ${state.babyName}`;
+            state.babyName = nameVal || "Mi BebÃÂ©"; calculateStatus();
+            document.querySelector('header h1').innerText = `Ã°ÂÂÂ¶ ${state.babyName}`;
             document.getElementById('start-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
             renderView();
@@ -421,8 +421,8 @@
             const remainingTime = dueDate - today;
             const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
             let countdownText = "";
-            if (remainingDays <= 0) { countdownText = "Â¡Ya es fecha o ha pasado!"; }
-            else { let remainingWeeks = Math.floor(remainingDays / 7); let extraDays = remainingDays % 7; countdownText = `${remainingWeeks} Semanas y ${extraDays} DÃ­as`; }
+            if (remainingDays <= 0) { countdownText = "ÃÂ¡Ya es fecha o ha pasado!"; }
+            else { let remainingWeeks = Math.floor(remainingDays / 7); let extraDays = remainingDays % 7; countdownText = `${remainingWeeks} Semanas y ${extraDays} DÃÂ­as`; }
             state.countdownText = countdownText;
         }
 
@@ -441,7 +441,7 @@
             if(newIdx >= 0 && newIdx < weeksData.length) { state.weekIndex = newIdx; renderView(); }
         }
 
-        // --- LÃGICA DE ADMIN ---
+        // --- LÃÂGICA DE ADMIN ---
         function initAdminPanel() {
             const select = document.getElementById('admin-week-select');
             select.innerHTML = '';
@@ -475,7 +475,7 @@
             ghConfig.repo = document.getElementById('gh-repo').value;
             ghConfig.token = document.getElementById('gh-token').value;
             localStorage.setItem('gh_config', JSON.stringify(ghConfig));
-            alert("ConfiguraciÃ³n guardada.");
+            alert("ConfiguraciÃÂ³n guardada.");
             location.reload();
         }
 
@@ -484,10 +484,10 @@
             location.reload();
         }
 
-        // --- LÃGICA DE GITHUB API (CORREGIDA v4.2) ---
+        // --- LÃÂGICA DE GITHUB API (CORREGIDA v4.2) ---
         async function pushToGitHub() {
             if (!ghConfig.user || !ghConfig.repo || !ghConfig.token) {
-                return alert("Faltan datos de conexiÃ³n.");
+                return alert("Faltan datos de conexiÃÂ³n.");
             }
 
             const btn = document.getElementById('btn-push');
@@ -508,13 +508,13 @@
 
                 if (!res.ok) throw new Error("No se pudo conectar con el repositorio. Revisa usuario y token.");
 
-                // 2. Decodificar la respuesta JSON (AquÃ­ estaba el error antes)
+                // 2. Decodificar la respuesta JSON (AquÃÂ­ estaba el error antes)
                 const data = await res.json();
                 const sha = data.sha;
                 
                 // 3. Decodificar el contenido Base64 del archivo
                 // data.content es el HTML en base64. data.encoding es base64.
-                // Quitamos saltos de lÃ­nea y decodificamos.
+                // Quitamos saltos de lÃÂ­nea y decodificamos.
                 const encodedContent = data.content.replace(/\n/g, ''); 
                 const currentHtmlRaw = atob(encodedContent);
 
@@ -522,7 +522,7 @@
                 const newWeeksDataString = "const weeksData = " + JSON.stringify(weeksData, null, 4) + ";";
                 
                 if (!/const weeksData = \[([\s\S]*?)\];/.test(currentHtmlRaw)) {
-                    throw new Error("No se encontrÃ³ la estructura weeksData en el archivo.");
+                    throw new Error("No se encontrÃÂ³ la estructura weeksData en el archivo.");
                 }
 
                 const newHtmlContent = currentHtmlRaw.replace(/const weeksData = \[([\s\S]*?)\];/, newWeeksDataString + ";");
@@ -546,7 +546,7 @@
                 });
 
                 if(putRes.ok) {
-                    status.innerText = "Â¡Guardado con Ã©xito!";
+                    status.innerText = "ÃÂ¡Guardado con ÃÂ©xito!";
                     status.style.color = "green";
                     setTimeout(() => { status.innerText = ""; btn.disabled = false; }, 3000);
                 } else {
