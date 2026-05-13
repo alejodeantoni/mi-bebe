@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1077/1077114.png">
@@ -39,7 +37,20 @@
         .hidden { display: none !important; }
         footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #999; border-top: 1px solid #eee; margin-top: auto; }
     </style>
-</head>
+<style type="text/css" data-guidde-blur-css="true">
+/* Repetition and !important are needed to override host page top-level styles */
+/* CSS Variables are defined by JS */
+
+.GUIDDE-JS-BlurCandidate.GUIDDE-JS-BlurCandidate.GUIDDE-JS-BlurCandidate {
+    background-color: var(--guidde-highlight-bg) !important;
+    outline: var(--guidde-highlight-border) !important;
+}
+
+.GUIDDE-JS-AutoBlurred.GUIDDE-JS-AutoBlurred.GUIDDE-JS-AutoBlurred,
+.GUIDDE-JS-Blurred.GUIDDE-JS-Blurred.GUIDDE-JS-Blurred {
+    filter: var(--guidde-blur) !important;
+}
+</style></head>
 <body>
 
     <header>
@@ -48,20 +59,14 @@
 
     <main>
         <!-- PANEL DE ADMINISTRACIÓN -->
-        <div id="admin-panel" class="hidden">
+        <div id="admin-panel" class="">
             <h3 style="color:var(--primary-dark);">🛠 Panel de Configuración v4.0</h3>
             
             <!-- Conexión GitHub -->
-            <div id="github-config" class="config-area">
-                <p style="font-size:0.8rem; font-weight:bold; color:#444;">1. Conexión con GitHub (Solo hacerlo una vez):</p>
-                <input type="text" id="gh-user" placeholder="Tu usuario (ej: alejodeantoni)">
-                <input type="text" id="gh-repo" placeholder="Nombre del repositorio">
-                <input type="password" id="gh-token" placeholder="Token de Acceso (Personal Access Token)">
-                <button class="btn" style="padding:10px; font-size:0.9rem;" onclick="saveConfig()">Guardar Configuración</button>
-            </div>
+            <div id="github-config" class="config-area hidden"><button onclick="clearConfig()" style="background:#eee; border:none; border-radius:5px; cursor:pointer;">Borrar Credenciales</button></div>
 
             <div class="admin-controls">
-                <select id="admin-week-select" onchange="loadAdminData()" style="flex:1;"></select>
+                <select id="admin-week-select" onchange="loadAdminData()" style="flex:1;"><option value="0">Semana 1</option><option value="1">Semana 2</option><option value="2">Semana 3</option><option value="3">Semana 4</option><option value="4">Semana 5</option><option value="5">Semana 6</option><option value="6">Semana 7</option><option value="7">Semana 8</option><option value="8">Semana 9</option><option value="9">Semana 10</option><option value="10">Semana 11</option><option value="11">Semana 12</option><option value="12">Semana 13</option><option value="13">Semana 14</option><option value="14">Semana 15</option><option value="15">Semana 16</option><option value="16">Semana 17</option><option value="17">Semana 18</option><option value="18">Semana 19</option><option value="19">Semana 20</option><option value="20">Semana 21</option><option value="21">Semana 22</option><option value="22">Semana 23</option><option value="23">Semana 24</option><option value="24">Semana 25</option><option value="25">Semana 26</option><option value="26">Semana 27</option><option value="27">Semana 28</option><option value="28">Semana 29</option><option value="29">Semana 30</option><option value="30">Semana 31</option><option value="31">Semana 32</option><option value="32">Semana 33</option><option value="33">Semana 34</option><option value="34">Semana 35</option><option value="35">Semana 36</option><option value="36">Semana 37</option><option value="37">Semana 38</option><option value="38">Semana 39</option><option value="39">Semana 40</option></select>
             </div>
 
             <div style="text-align: left; display: grid; gap: 10px;">
@@ -74,10 +79,10 @@
                 
                 <button onclick="saveToMemory()" class="btn" style="background:#FFB3C1; color:white;">💾 Guardar en memoria local</button>
                 
-                <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud">
+                <button id="btn-push" onclick="pushToGitHub()" class="btn btn-save-cloud" disabled="">
                     ☁️ Guardar en GitHub (Actualizar Web)
                 </button>
-                <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;"></p>
+                <p id="status-msg" style="font-size:0.8rem; text-align:center; color:#666; height:20px;">Conectando con GitHub...</p>
             </div>
         </div>
 
@@ -96,7 +101,7 @@
         <section id="app-view" class="hidden">
             <div class="countdown-box">
                 <p style="margin:0; font-size:0.9rem;">Para el parto faltan:</p>
-                <div class="big-number" id="countdown-text">...</div>
+                <div class="big-number" id="countdown-text">undefined</div>
             </div>
             <div class="info-box">
                 <span id="disp-week" style="background:rgba(255,255,255,0.3); padding:5px 10px; border-radius:15px; font-weight:bold; font-size:0.9rem;">Semana 1</span>
@@ -104,9 +109,9 @@
                 <span class="label">Día actual de la semana</span>
             </div>
             <div class="card" style="text-align:left;">
-                <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1</h2>
-                <img id="disp-img" class="creator-img" src="" alt="Semana">
-                <div id="disp-text" class="creator-text">...</div>
+                <h2 id="disp-title" style="color:var(--primary-dark); text-align:center;">Semana 1 - Título</h2>
+                <img id="disp-img" class="creator-img" src="https://picsum.photos/seed/baby1/600/400" alt="Semana">
+                <div id="disp-text" class="creator-text">Texto para la semanaxxscs 1.</div>
             </div>
             <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:20px;">
                 <button class="btn" style="background:#ddd; color:#555; font-size:0.9rem;" onclick="nav(-1)">Anterior</button>
@@ -119,13 +124,254 @@
     </main>
 
     <footer>
-        <p>App Mi Bebé &copy; 2023</p>
+        <p>App Mi Bebé © 2023</p>
         <p style="margin-top:5px; font-weight:bold;">Versión v4.0 (Cloud API)</p>
     </footer>
 
     <script>
         // --- APP VERSION v4.0 ---
-        const weeksData = [];
+        const weeksData = [
+    {
+        "week": 1,
+        "title": "Semana 1 - Título",
+        "image": "https://picsum.photos/seed/baby1/600/400",
+        "text": "Texto para la semanaxxscs 1."
+    },
+    {
+        "week": 2,
+        "title": "Semana 2 - Título",
+        "image": "https://picsum.photos/seed/baby2/600/400",
+        "text": "Texto para la semana 2."
+    },
+    {
+        "week": 3,
+        "title": "Semana 3 - Título",
+        "image": "https://picsum.photos/seed/baby3/600/400",
+        "text": "Texto para la semana 3."
+    },
+    {
+        "week": 4,
+        "title": "Semana 4 - Título",
+        "image": "https://picsum.photos/seed/baby4/600/400",
+        "text": "Texto para la semana 4."
+    },
+    {
+        "week": 5,
+        "title": "Semana 5 - Título",
+        "image": "https://picsum.photos/seed/baby5/600/400",
+        "text": "Texto para la semana 5."
+    },
+    {
+        "week": 6,
+        "title": "Semana 6 - Título",
+        "image": "https://picsum.photos/seed/baby6/600/400",
+        "text": "Texto para la semana 6."
+    },
+    {
+        "week": 7,
+        "title": "Semana 7 - Título",
+        "image": "https://picsum.photos/seed/baby7/600/400",
+        "text": "Texto para la semana 7."
+    },
+    {
+        "week": 8,
+        "title": "Semana 8 - Título",
+        "image": "https://picsum.photos/seed/baby8/600/400",
+        "text": "Texto para la semana 8."
+    },
+    {
+        "week": 9,
+        "title": "Semana 9 - Título",
+        "image": "https://picsum.photos/seed/baby9/600/400",
+        "text": "Texto para la semana 9."
+    },
+    {
+        "week": 10,
+        "title": "Semana 10 - Título",
+        "image": "https://picsum.photos/seed/baby10/600/400",
+        "text": "Texto para la semana 10."
+    },
+    {
+        "week": 11,
+        "title": "Semana 11 - Título",
+        "image": "https://picsum.photos/seed/baby11/600/400",
+        "text": "Texto para la semana 11."
+    },
+    {
+        "week": 12,
+        "title": "Semana 12 - Título",
+        "image": "https://picsum.photos/seed/baby12/600/400",
+        "text": "Texto para la semana 12."
+    },
+    {
+        "week": 13,
+        "title": "Semana 13 - Título",
+        "image": "https://picsum.photos/seed/baby13/600/400",
+        "text": "Texto para la semana 13."
+    },
+    {
+        "week": 14,
+        "title": "Semana 14 - Título",
+        "image": "https://picsum.photos/seed/baby14/600/400",
+        "text": "Texto para la semana 14."
+    },
+    {
+        "week": 15,
+        "title": "Semana 15 - Título",
+        "image": "https://picsum.photos/seed/baby15/600/400",
+        "text": "Texto para la semana 15."
+    },
+    {
+        "week": 16,
+        "title": "Semana 16 - Título",
+        "image": "https://picsum.photos/seed/baby16/600/400",
+        "text": "Texto para la semana 16."
+    },
+    {
+        "week": 17,
+        "title": "Semana 17 - Título",
+        "image": "https://picsum.photos/seed/baby17/600/400",
+        "text": "Texto para la semana 17."
+    },
+    {
+        "week": 18,
+        "title": "Semana 18 - Título",
+        "image": "https://picsum.photos/seed/baby18/600/400",
+        "text": "Texto para la semana 18."
+    },
+    {
+        "week": 19,
+        "title": "Semana 19 - Título",
+        "image": "https://picsum.photos/seed/baby19/600/400",
+        "text": "Texto para la semana 19."
+    },
+    {
+        "week": 20,
+        "title": "Semana 20 - Título",
+        "image": "https://picsum.photos/seed/baby20/600/400",
+        "text": "Texto para la semana 20."
+    },
+    {
+        "week": 21,
+        "title": "Semana 21 - Título",
+        "image": "https://picsum.photos/seed/baby21/600/400",
+        "text": "Texto para la semana 21."
+    },
+    {
+        "week": 22,
+        "title": "Semana 22 - Título",
+        "image": "https://picsum.photos/seed/baby22/600/400",
+        "text": "Texto para la semana 22."
+    },
+    {
+        "week": 23,
+        "title": "Semana 23 - Título",
+        "image": "https://picsum.photos/seed/baby23/600/400",
+        "text": "Texto para la semana 23."
+    },
+    {
+        "week": 24,
+        "title": "Semana 24 - Título",
+        "image": "https://picsum.photos/seed/baby24/600/400",
+        "text": "Texto para la semana 24."
+    },
+    {
+        "week": 25,
+        "title": "Semana 25 - Título",
+        "image": "https://picsum.photos/seed/baby25/600/400",
+        "text": "Texto para la semana 25."
+    },
+    {
+        "week": 26,
+        "title": "Semana 26 - Título",
+        "image": "https://picsum.photos/seed/baby26/600/400",
+        "text": "Texto para la semana 26."
+    },
+    {
+        "week": 27,
+        "title": "Semana 27 - Título",
+        "image": "https://picsum.photos/seed/baby27/600/400",
+        "text": "Texto para la semana 27."
+    },
+    {
+        "week": 28,
+        "title": "Semana 28 - Título",
+        "image": "https://picsum.photos/seed/baby28/600/400",
+        "text": "Texto para la semana 28."
+    },
+    {
+        "week": 29,
+        "title": "Semana 29 - Título",
+        "image": "https://picsum.photos/seed/baby29/600/400",
+        "text": "Texto para la semana 29."
+    },
+    {
+        "week": 30,
+        "title": "Semana 30 - Título",
+        "image": "https://picsum.photos/seed/baby30/600/400",
+        "text": "Texto para la semana 30."
+    },
+    {
+        "week": 31,
+        "title": "Semana 31 - Título",
+        "image": "https://picsum.photos/seed/baby31/600/400",
+        "text": "Texto para la semana 31."
+    },
+    {
+        "week": 32,
+        "title": "Semana 32 - Título",
+        "image": "https://picsum.photos/seed/baby32/600/400",
+        "text": "Texto para la semana 32."
+    },
+    {
+        "week": 33,
+        "title": "Semana 33 - Título",
+        "image": "https://picsum.photos/seed/baby33/600/400",
+        "text": "Texto para la semana 33."
+    },
+    {
+        "week": 34,
+        "title": "Semana 34 - Título",
+        "image": "https://picsum.photos/seed/baby34/600/400",
+        "text": "Texto para la semana 34."
+    },
+    {
+        "week": 35,
+        "title": "Semana 35 - Título",
+        "image": "https://picsum.photos/seed/baby35/600/400",
+        "text": "Texto para la semana 35."
+    },
+    {
+        "week": 36,
+        "title": "Semana 36 - Título",
+        "image": "https://picsum.photos/seed/baby36/600/400",
+        "text": "Texto para la semana 36."
+    },
+    {
+        "week": 37,
+        "title": "Semana 37 - Título",
+        "image": "https://picsum.photos/seed/baby37/600/400",
+        "text": "Texto para la semana 37."
+    },
+    {
+        "week": 38,
+        "title": "Semana 38 - Título",
+        "image": "https://picsum.photos/seed/baby38/600/400",
+        "text": "Texto para la semana 38."
+    },
+    {
+        "week": 39,
+        "title": "Semana 39 - Título",
+        "image": "https://picsum.photos/seed/baby39/600/400",
+        "text": "Texto para la semana 39."
+    },
+    {
+        "week": 40,
+        "title": "Semana 40 - Título",
+        "image": "https://picsum.photos/seed/baby40/600/400",
+        "text": "Texto para la semana 40."
+    }
+];;
         for (let i = 1; i <= 40; i++) {
             weeksData.push({
                 week: i, title: `Semana ${i} - Título`, image: `https://picsum.photos/seed/baby${i}/600/400`, text: `Texto para la semana ${i}.`
@@ -321,5 +567,6 @@
         }
 
     </script>
-</body>
-</html>
+
+
+</body><guidde-record id="GUIDDE_JS_RECORD_UI" dir="ltr" style="position: absolute; z-index: 999999999;"></guidde-record></html>
